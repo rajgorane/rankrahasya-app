@@ -128,7 +128,13 @@ function Start() {
 
   return (
     <Page title="Your reflection" kicker="About 2 minutes">
-      {mode && !mode.available && (\n        <div className="mb-6 rounded-xl border border-warning/50 bg-muted p-4 text-sm">\n          <strong className="text-warning">Preview available — unlock setup is unfinished.</strong>{" "}\n          <span className="text-muted-foreground">You can explore your preview, but saving orders and payments will be enabled after the secure backend key is configured.</span>\n        </div>\n      )}\n      {mode?.available && !mode.live && (
+      {mode && !mode.available && (
+        <div className="mb-6 rounded-xl border border-warning/50 bg-muted p-4 text-sm">
+          <strong className="text-warning">Preview available — unlock setup is unfinished.</strong>{" "}
+          <span className="text-muted-foreground">You can explore your preview, but saving orders and payments will be enabled after the secure backend key is configured.</span>
+        </div>
+      )}
+      {mode?.available && !mode.live && (
         <div className="mb-6 rounded-xl border border-warning/50 bg-muted p-4 text-sm">
           <strong className="text-warning">Demo mode — payments are not live.</strong>{" "}
           <span className="text-muted-foreground">No payment will be taken or claimed. You'll see a demo report marked as unpaid.</span>
