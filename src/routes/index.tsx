@@ -5,7 +5,7 @@ import { Disclaimer, Emblem, seo } from "@/components/site";
 export const Route = createFileRoute("/")({
   head: () =>
     seo(
-      "RankRahasya — ₹10 self-discovery report for JEE & NEET students",
+      "RankRahasya — personal study reflection for JEE & NEET students",
       "An astrology-inspired reflection report built from your study habits. Practical next steps for Kota and pan-India aspirants. No rank predictions.",
     ),
   component: Index,
@@ -27,7 +27,7 @@ function Index() {
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Link to="/start" className="w-full rounded-full bg-gold-gradient px-8 py-4 text-lg font-semibold text-primary-foreground shadow-glow sm:w-auto">
-              Get my report · ₹10
+              Explore my study pattern
             </Link>
             <Link to="/sample-report" className="w-full rounded-full border border-border px-8 py-4 text-foreground hover:border-gold sm:w-auto">
               See a sample
