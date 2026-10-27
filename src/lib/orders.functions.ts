@@ -3,10 +3,12 @@ import { z } from "zod";
 import { answersSchema, generateReport, PRICE_PAISE, type Report } from "./report";
 
 export const getPaymentMode = createServerFn({ method: "GET" }).handler(async () => {
-  const { razorpayConfig } = await import("./orders.server");
-  const cfg = razorpayConfig();
+  // Keep this readiness check independent of the admin client so missing secrets
+  // can be reported to the UI instead of crashing the server function on import.
+  const keyId = process.env["RAZORPAY_KEY_ID"];
+  const keySecret = process.env["RAZORPAY_KEY_SECRET"];
   const available = !!process.env["SUPABASE_SERVICE_ROLE_KEY"];
-  return { live: !!cfg && available, testMode: !!cfg?.keyId.startsWith("rzp_test_"), available };
+  return { live: !!keyId && !!keySecret && available, testMode: !!keyId?.startsWith("rzp_test_"), available };
 });
 
 export const createReportOrder = createServerFn({ method: "POST" })
