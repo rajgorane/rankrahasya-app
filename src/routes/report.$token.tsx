@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Loader2, MessageCircle } from "lucide-react";
 import { Page, seo } from "@/components/site";
 import { ReportView } from "@/components/report-view";
 import { getReportByToken } from "@/lib/orders.functions";
@@ -53,7 +53,8 @@ function ReportPage() {
           <span className="text-muted-foreground">No payment was taken for this report.</span>
         </div>
       )}
-      <p className="mb-6 text-sm text-muted-foreground">Bookmark this page — this private link is the only way back to your report.</p>
+      <p className="mb-4 text-sm text-muted-foreground">Bookmark this page — this private link is the only way back to your report.</p>
+      <a className="mb-6 flex w-full items-center justify-center gap-2 rounded-full border border-[#25D366]/50 px-5 py-3 font-medium text-foreground hover:bg-[#25D366]/10" href={"https://wa.me/?text=" + encodeURIComponent("I tried RankRahasya’s personal study-pattern reflection. Curious what yours might say? Check it out: https://rankrahasya-next.vercel.app")} target="_blank" rel="noreferrer"><MessageCircle className="h-5 w-5 text-[#25D366]" />Share RankRahasya on WhatsApp</a>
       <ReportView report={data.report} />
     </Page>
   );
