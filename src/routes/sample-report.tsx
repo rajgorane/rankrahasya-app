@@ -16,7 +16,7 @@ function Sample() {
       </p>
       <ReportView report={generateReport(SAMPLE_ANSWERS)} />
       <Link to="/start" className="mt-8 block rounded-full bg-gold-gradient py-4 text-center text-lg font-semibold text-primary-foreground">
-        Get my own report · ₹10
+        Explore my study pattern
       </Link>
     </Page>
   );
