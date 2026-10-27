@@ -128,7 +128,7 @@ function Start() {
 
   return (
     <Page title="Your reflection" kicker="About 2 minutes">
-      {mode && !mode.live && (
+      {mode && !mode.available && (\n        <div className="mb-6 rounded-xl border border-warning/50 bg-muted p-4 text-sm">\n          <strong className="text-warning">Preview available — unlock setup is unfinished.</strong>{" "}\n          <span className="text-muted-foreground">You can explore your preview, but saving orders and payments will be enabled after the secure backend key is configured.</span>\n        </div>\n      )}\n      {mode?.available && !mode.live && (
         <div className="mb-6 rounded-xl border border-warning/50 bg-muted p-4 text-sm">
           <strong className="text-warning">Demo mode — payments are not live.</strong>{" "}
           <span className="text-muted-foreground">No payment will be taken or claimed. You'll see a demo report marked as unpaid.</span>
@@ -222,9 +222,9 @@ function Start() {
           </p>
         )}
 
-        <button type="submit" disabled={busy} className="flex w-full items-center justify-center gap-2 rounded-full bg-gold-gradient py-4 text-lg font-semibold text-primary-foreground shadow-glow disabled:opacity-60">
+        <button type="submit" disabled={busy || (showPreview && mode?.available === false)} className="flex w-full items-center justify-center gap-2 rounded-full bg-gold-gradient py-4 text-lg font-semibold text-primary-foreground shadow-glow disabled:opacity-60">
           {busy && <Loader2 className="h-5 w-5 animate-spin" />}
-          {!showPreview ? "See my personal preview" : mode?.live === false ? "Unlock demo report (no payment)" : `Unlock my report — ${PRICE_LABEL}`}
+          {!showPreview ? "See my personal preview" : mode?.available === false ? "Unlock temporarily unavailable" : mode?.live === false ? "Unlock demo report (no payment)" : `Unlock my report — ${PRICE_LABEL}`}
         </button>
         {showPreview && <p className="text-center text-xs text-muted-foreground">One-time unlock · Your answers stay in this form if you need to retry.</p>}
         <Disclaimer compact />
