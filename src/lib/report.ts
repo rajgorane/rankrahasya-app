@@ -15,11 +15,14 @@ export const answersSchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Choose your birth date")
     .refine((v) => {
-      const d = new Date(v + "T00:00:00Z");
-      if (Number.isNaN(d.getTime())) return false;
-      const y = d.getUTCFullYear();
-      return y >= 1980 && d.getTime() < Date.now();
-    }, "Enter a valid past birth date"),
+      const [year, month, day] = v.split("-").map(Number);
+      const d = new Date(Date.UTC(year!, month! - 1, day!));
+      const isRealDate =
+        d.getUTCFullYear() === year &&
+        d.getUTCMonth() === month! - 1 &&
+        d.getUTCDate() === day;
+      return isRealDate && d.getTime() <= Date.now();
+    }, "Enter a real date that is not in the future"),
   exam: z.enum(["JEE", "NEET", "Other"]),
   studyHours: z.enum(["lt3", "3to6", "6to9", "9plus"]),
   bestTime: z.enum(["morning", "afternoon", "evening", "night"]),
