@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { Loader2, LockKeyhole, Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Disclaimer, Page, seo } from "@/components/site";
 import { answersSchema, PRICE_LABEL, type Answers } from "@/lib/report";
 import { createReportOrder, getPaymentMode, verifyReportPayment } from "@/lib/orders.functions";
@@ -52,11 +52,10 @@ function Start() {
   const [form, setForm] = useState<Partial<Record<keyof Answers, unknown>>>({ consent: false });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
   const [notice, setNotice] = useState<{ kind: "error" | "info"; text: string } | null>(null);
   const pending = useRef<{ token: string; orderId: string; keyId: string; amount: number } | null>(null);
 
-  const set = (k: keyof Answers, v: unknown) => { setForm((f) => ({ ...f, [k]: v })); setShowPreview(false); };
+  const set = (k: keyof Answers, v: unknown) => setForm((f) => ({ ...f, [k]: v }));
 
   function openCheckout(o: NonNullable<typeof pending.current>) {
     if (!window.Razorpay) return;
@@ -105,7 +104,6 @@ function Start() {
       return;
     }
     setErrors({});
-    if (!showPreview) { setShowPreview(true); return; }
     if (pending.current) return openCheckout(pending.current);
     setBusy(true);
     try {
@@ -130,8 +128,8 @@ function Start() {
     <Page title="Your reflection" kicker="About 2 minutes">
       {mode && !mode.available && (
         <div className="mb-6 rounded-xl border border-warning/50 bg-muted p-4 text-sm">
-          <strong className="text-warning">Preview available — unlock setup is unfinished.</strong>{" "}
-          <span className="text-muted-foreground">You can explore your preview, but saving orders and payments will be enabled after the secure backend key is configured.</span>
+          <strong className="text-warning">Unlock is temporarily unavailable.</strong>{" "}
+          <span className="text-muted-foreground">Secure order creation and payments will be enabled after backend setup is completed.</span>
         </div>
       )}
       {mode?.available && !mode.live && (
@@ -189,50 +187,16 @@ function Start() {
           {err("consent")}
         </div>
 
-        {showPreview && (
-          <section className="space-y-4 rounded-2xl border border-gold/40 bg-card p-5 shadow-glow">
-            <div className="text-center">
-              <Sparkles className="mx-auto h-6 w-6 text-gold" />
-              <p className="mt-2 text-xs uppercase tracking-[0.22em] text-gold">Made from your answers</p>
-              <h2 className="mt-2 text-2xl font-semibold">Your study pattern has a story.</h2>
-              <p className="mt-2 text-sm text-muted-foreground">Here are two clues from the habits you shared.</p>
-            </div>
-            <div className="rounded-xl border border-border p-4">
-              <p className="font-semibold">Your natural study window</p>
-              <p className="mt-1 text-sm text-muted-foreground">{({ morning: "You feel sharpest in the morning", afternoon: "You feel sharpest in the afternoon", evening: "You feel sharpest in the evening", night: "You feel sharpest late at night" } as Record<string, string>)[String(form.bestTime)] ?? "Your preferred study window"} may be a useful place to protect focused time.</p>
-            </div>
-            <div className="rounded-xl border border-border p-4">
-              <p className="font-semibold">A pattern worth exploring</p>
-              <p className="mt-1 text-sm text-muted-foreground">{({ phone: "Phone interruptions", people: "Your surroundings", overthinking: "Overthinking", fatigue: "Tiredness" } as Record<string, string>)[String(form.distraction)] ?? "Your main distraction"} may be the first thing to design around—not fight with willpower alone.</p>
-            </div>
-            <div className="relative overflow-hidden rounded-xl border border-gold/30 p-4">
-              <div aria-hidden="true" className="pointer-events-none select-none space-y-3 blur-[5px] opacity-60">
-                <p className="font-semibold">Your personal strengths and study rhythm</p>
-                <div className="h-3 w-full rounded bg-muted" /><div className="h-3 w-4/5 rounded bg-muted" /><div className="h-3 w-11/12 rounded bg-muted" />
-                <p className="font-semibold">Three practical next steps</p>
-                <div className="h-3 w-3/4 rounded bg-muted" /><div className="h-3 w-full rounded bg-muted" />
-              </div>
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/65 px-3 text-center">
-                <LockKeyhole className="h-5 w-5 text-gold" />
-                <p className="mt-1 font-semibold">Unlock to reveal your full report</p>
-                <p className="mt-1 text-xs text-muted-foreground">Study rhythm · strengths · next steps</p>
-              </div>
-            </div>
-            {mode?.testMode && <p className="rounded-lg border border-warning/40 bg-muted p-3 text-center text-xs font-medium text-warning">TEST MODE — no real money will be charged</p>}
-          </section>
-        )}
-
         {notice && (
           <p role="status" className={`rounded-xl border p-3 text-sm ${notice.kind === "error" ? "border-destructive text-destructive" : "border-border text-foreground"}`}>
             {notice.text}
           </p>
         )}
 
-        <button type="submit" disabled={busy || (showPreview && mode?.available === false)} className="flex w-full items-center justify-center gap-2 rounded-full bg-gold-gradient py-4 text-lg font-semibold text-primary-foreground shadow-glow disabled:opacity-60">
+        <button type="submit" disabled={busy || mode?.available === false} className="flex w-full items-center justify-center gap-2 rounded-full bg-gold-gradient py-4 text-lg font-semibold text-primary-foreground shadow-glow disabled:opacity-60">
           {busy && <Loader2 className="h-5 w-5 animate-spin" />}
-          {!showPreview ? "See my personal preview" : mode?.available === false ? "Unlock temporarily unavailable" : mode?.live === false ? "Unlock demo report (no payment)" : `Unlock my report — ${PRICE_LABEL}`}
+          {mode?.available === false ? "Unlock temporarily unavailable" : mode?.live === false ? "Unlock demo report (no payment)" : `Unlock my report — ${PRICE_LABEL}`}
         </button>
-        {showPreview && <p className="text-center text-xs text-muted-foreground">One-time unlock · Your answers stay in this form if you need to retry.</p>}
         <Disclaimer compact />
       </form>
     </Page>
