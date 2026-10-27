@@ -124,6 +124,7 @@ function Start() {
   const err = (k: string) => errors[k] && <p className="mt-1 text-sm text-destructive">{errors[k]}</p>;
   const today = new Date();
   const todayDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const minBirthDate = `${today.getFullYear() - 16}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const inputCls = "mt-2 w-full rounded-xl border border-input bg-muted px-4 py-3 text-foreground outline-none focus:border-gold";
 
   return (
@@ -148,7 +149,7 @@ function Start() {
         </div>
         <div id="f-birthDate">
           <label className="text-sm font-medium" htmlFor="dob">Birth date</label>
-          <input id="dob" type="date" className={inputCls} max={todayDate} value={(form.birthDate as string) ?? ""} onChange={(e) => set("birthDate", e.target.value)} />
+          <input id="dob" type="date" className={inputCls} min="1900-01-01" max={minBirthDate} value={(form.birthDate as string) ?? ""} onChange={(e) => set("birthDate", e.target.value)} />
           <p className="mt-1 text-xs text-muted-foreground">Used only for your sun-season theme. We don't need birth time or place.</p>
           {err("birthDate")}
         </div>
