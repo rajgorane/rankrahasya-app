@@ -4,7 +4,8 @@ import { answersSchema, generateReport, PRICE_PAISE, type Report } from "./repor
 
 export const getPaymentMode = createServerFn({ method: "GET" }).handler(async () => {
   const { razorpayConfig } = await import("./orders.server");
-  return { live: !!razorpayConfig() };
+  const cfg = razorpayConfig();
+  return { live: !!cfg, testMode: !!cfg?.keyId.startsWith("rzp_test_") };
 });
 
 export const createReportOrder = createServerFn({ method: "POST" })
