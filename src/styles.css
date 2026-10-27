@@ -1,0 +1,116 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * RankRahasya design system — midnight navy, refined gold, subtle indigo.
+ * All colors are oklch. Components must use these semantic tokens only.
+ */
+
+@theme inline {
+  --font-serif: "Cormorant Garamond", "Georgia", serif;
+  --font-sans: "Karla", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-indigo: var(--indigo);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.17 0.04 272);
+  --foreground: oklch(0.94 0.015 85);
+  --card: oklch(0.21 0.045 272);
+  --card-foreground: oklch(0.94 0.015 85);
+  --popover: oklch(0.21 0.045 272);
+  --popover-foreground: oklch(0.94 0.015 85);
+  --primary: oklch(0.87 0.08 85);
+  --primary-foreground: oklch(0.17 0.04 272);
+  --secondary: oklch(0.26 0.06 275);
+  --secondary-foreground: oklch(0.94 0.015 85);
+  --muted: oklch(0.24 0.04 272);
+  --muted-foreground: oklch(0.74 0.03 270);
+  --accent: oklch(0.3 0.08 277);
+  --accent-foreground: oklch(0.94 0.015 85);
+  --destructive: oklch(0.65 0.18 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.87 0.08 85 / 16%);
+  --input: oklch(0.87 0.08 85 / 22%);
+  --ring: oklch(0.87 0.08 85 / 60%);
+  --gold: oklch(0.87 0.08 85);
+  --gold-soft: oklch(0.87 0.08 85 / 12%);
+  --indigo: oklch(0.45 0.13 277);
+  --success: oklch(0.78 0.12 160);
+  --warning: oklch(0.82 0.13 75);
+  --gradient-night: radial-gradient(120% 80% at 50% -10%, oklch(0.3 0.09 277 / 70%), transparent 60%),
+    linear-gradient(180deg, oklch(0.17 0.04 272), oklch(0.14 0.035 272));
+  --gradient-gold: linear-gradient(135deg, oklch(0.9 0.07 88), oklch(0.8 0.09 78));
+  --shadow-glow: 0 10px 40px -12px oklch(0.87 0.08 85 / 35%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--gradient-night);
+    background-attachment: fixed;
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    letter-spacing: -0.01em;
+  }
+}
+
+@utility bg-gold-gradient {
+  background: var(--gradient-gold);
+}
+@utility shadow-glow {
+  box-shadow: var(--shadow-glow);
+}
+@utility starfield {
+  background-image:
+    radial-gradient(1px 1px at 12% 22%, oklch(0.94 0.02 85 / 70%), transparent),
+    radial-gradient(1px 1px at 78% 14%, oklch(0.94 0.02 85 / 55%), transparent),
+    radial-gradient(1.5px 1.5px at 62% 48%, oklch(0.87 0.08 85 / 60%), transparent),
+    radial-gradient(1px 1px at 32% 72%, oklch(0.94 0.02 85 / 45%), transparent),
+    radial-gradient(1px 1px at 88% 82%, oklch(0.94 0.02 85 / 50%), transparent);
+}
+@utility prose-legal {
+  & h2 { font-size: 1.5rem; margin-top: 2rem; margin-bottom: 0.5rem; color: var(--color-gold); }
+  & p, & li { color: var(--color-muted-foreground); line-height: 1.7; margin-bottom: 0.75rem; }
+  & ul { list-style: disc; padding-left: 1.25rem; }
+}
