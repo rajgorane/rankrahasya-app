@@ -21,8 +21,10 @@ export const answersSchema = z.object({
         d.getUTCFullYear() === year &&
         d.getUTCMonth() === month! - 1 &&
         d.getUTCDate() === day;
-      return isRealDate && d.getTime() <= Date.now();
-    }, "Enter a real date that is not in the future"),
+      const today = new Date();
+      const cutoff = new Date(Date.UTC(today.getUTCFullYear() - 16, today.getUTCMonth(), today.getUTCDate()));
+      return isRealDate && d.getTime() <= cutoff.getTime();
+    }, "You must be at least 16 years old"),
   exam: z.enum(["JEE", "NEET", "Other"]),
   studyHours: z.enum(["lt3", "3to6", "6to9", "9plus"]),
   bestTime: z.enum(["morning", "afternoon", "evening", "night"]),
