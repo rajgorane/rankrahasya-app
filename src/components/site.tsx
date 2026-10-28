@@ -24,7 +24,6 @@ export function Wordmark() {
 
 const NAV = [
   { to: "/how-it-works", label: "How it works" },
-  { to: "/sample-report", label: "Sample report" },
   { to: "/faq", label: "FAQ" },
   { to: "/contact", label: "Contact" },
 ] as const;
