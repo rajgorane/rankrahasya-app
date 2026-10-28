@@ -2,14 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Disclaimer, Page, seo } from "@/components/site";
 
 export const Route = createFileRoute("/how-it-works")({
-  head: () => seo("How it works — RankRahasya", "Answer a few study questions, pay ₹10 securely, and read your personal reflection report instantly."),
+  head: () => seo("How it works — RankRahasya", "Answer a few study questions, complete checkout, and read your personal reflection report."),
   component: HowItWorks,
 });
 
 const STEPS = [
   { t: "Answer 7 short questions", d: "First name or nickname, birth date, exam goal, and how you actually study — hours, peak time, focus, distractions, motivation." },
-  { t: "Pay ₹10 securely", d: "Checkout is handled by Razorpay (UPI, cards, netbanking). We never see your card or UPI details. Payment is verified on our server." },
-  { t: "Read your report", d: "Your report is generated once and opened through a private link. Bookmark it — there is no login." },
+  { t: "Complete secure checkout", d: "Checkout is handled by Razorpay. Payment is verified on our server before a paid report is shown." },
+  { t: "Read your report", d: "Your report opens through a private link. Bookmark or save the link somewhere safe. If you lose it, contact support using the Contact page and include your payment ID plus your email address or phone number so we can help locate your purchase. Never post your private report link publicly." },
 ];
 
 function HowItWorks() {
@@ -33,7 +33,7 @@ function HowItWorks() {
       </div>
       <div className="mt-6"><Disclaimer /></div>
       <Link to="/start" className="mt-8 block rounded-full bg-gold-gradient py-4 text-center text-lg font-semibold text-primary-foreground">
-        Start · ₹10
+        Start my report
       </Link>
     </Page>
   );
