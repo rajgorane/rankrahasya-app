@@ -211,28 +211,44 @@ function buildPersonalSnapshot(a: Answers): string[] {
 
 function buildPersonalPlan(a: Answers): { title: string; detail: string }[] {
   const hours = {
-    lt3: "Start with one 25-minute focused block, a 5-minute break, then a second block if energy allows. Build consistency before adding volume.",
-    "3to6": "Use two or three focused blocks with a clear output for each; protect the final 10 minutes for recall or error review.",
-    "6to9": "Prioritise the two highest-value blocks first. Use later time for revision and corrections rather than adding low-quality hours.",
-    "9plus": "Set a firm stopping time and schedule breaks. Keep the most demanding work in your sharpest window; more hours are not automatically better.",
+    lt3: "Keep the first target small: one 25-minute block, a short break, then continue only if your energy allows.",
+    "3to6": "Use two or three focused blocks and finish each with a visible output: solved questions, recalled facts, or corrected errors.",
+    "6to9": "Do your two most demanding tasks first. Use remaining time for retrieval and corrections, and compare the quality of early and late blocks.",
+    "9plus": "Set a stopping time and protect sleep. Track what you retain rather than extending an already long study day.",
   }[a.studyHours];
   const timing = {
-    morning: "Put your hardest task in the first strong morning window, before messages or routine admin.",
-    afternoon: "Reserve your best afternoon window for problem-solving; use the earlier part of the day for setup or lighter review.",
-    evening: "Place your hardest work in the evening window you identified, and decide in advance what must be completed before it begins.",
-    night: "Use your night-time focus for a planned task, but keep sleep consistent and practise some timed work during the exam's likely daytime hours.",
+    morning: "Schedule the hardest task in your morning peak before messages or routine work.",
+    afternoon: "Use your afternoon peak for difficult questions; prepare the exact task before that window starts.",
+    evening: "Choose the task before your evening peak so the session begins with work, not planning.",
+    night: "Use your night-time peak for planned study, while keeping sleep steady and practising some exam-style work in daytime.",
   }[a.bestTime];
-  const distraction = {
-    phone: "Leave your phone outside arm's reach and decide when you will check it after the block ends.",
-    people: "Choose a repeatable location and signal the start and end of your protected study block to people around you.",
-    overthinking: "Before starting, write the one task you will finish and park unrelated worries on a page to revisit later.",
-    fatigue: "Check sleep, hydration and breaks first; if tiredness persists, reduce the block size rather than forcing extra hours.",
+  const friction = {
+    phone: "Leave your phone in another room until the block ends, then check it during a planned break.",
+    people: "Tell people your study block's start and end time, and use the same quieter spot where possible.",
+    overthinking: "Write the next physical action on paper and park unrelated thoughts for later; start before trying to solve everything mentally.",
+    fatigue: "Before adding hours, check sleep and breaks. If tiredness persists, shorten the block and review whether your energy improves.",
   }[a.distraction];
-  const challenge = STEP_BY_CHALLENGE[a.challenge];
+  const focusAdjustment = {
+    scattered: "Use a single task and a timer; record whether you finished it before switching.",
+    variable: "Repeat the same task format across three sessions and note sleep, interruptions and accuracy to find what changes.",
+    steady: "Keep the structure that supports your focus and use one block for timed, uninterrupted practice.",
+  }[a.focus];
+  const challengeAction = {
+    revision: "Close the book and write five key points from memory, then check and correct the gaps.",
+    consistency: "Set a ten-minute minimum for the session. Mark whether you started, even if you did not complete the full plan.",
+    doubts: "Choose one unresolved question, write the exact step where you get stuck, and ask a precise question about that step.",
+    tests: "Review the last practice set and choose the single most repeated error type to target in your next set.",
+  }[a.challenge];
+  const motivationCue = {
+    family: "Treat the session as a promise to your process, not a measure of what you owe anyone.",
+    dream: "Connect the session to one small, measurable step towards your longer-term goal.",
+    curiosity: "Ask yourself why the method works, then explain it without looking at the solution.",
+    proving: "Use the challenge as a cue to practise; do not use one result as a verdict on your ability.",
+  }[a.motivation];
   return [
     { title: `Your ${a.bestTime} anchor`, detail: `${timing} ${hours}` },
-    { title: "Reduce your biggest friction", detail: distraction },
-    { title: `One priority for ${a.exam === "Other" ? "your exam" : a.exam}`, detail: challenge.detail },
+    { title: "Make focus easier", detail: `${friction} ${focusAdjustment}` },
+    { title: `Your ${a.challenge === "revision" ? "recall" : a.challenge === "consistency" ? "restart" : a.challenge === "doubts" ? "doubt-clearing" : "test-review"} move`, detail: `${challengeAction} ${motivationCue}` },
   ];
 }
 
@@ -450,11 +466,45 @@ export function generateReport(a: Answers): Report {
     personalPlan: buildPersonalPlan(a),
     discoveryProfile: buildDiscoveryProfile(a),
     nextSteps: [
-      STEP_BY_CHALLENGE[a.challenge],
-      EXAM_STEP[a.exam],
       {
-        title: "Run a 7-day self-experiment",
-        detail: `For one week, study your hardest subject during your ${a.bestTime} peak and note focus (1–5) after each session. Keep what works.`,
+        title: ({
+          revision: "Test your recall before rereading",
+          consistency: "Create a restart rule",
+          doubts: "Turn one doubt into a precise question",
+          tests: "Find the pattern in your errors",
+        } as const)[a.challenge],
+        detail: ({
+          revision: `At your ${a.bestTime} peak, write five points from memory before opening notes. Use this for a topic you studied recently.`,
+          consistency: `On low-energy days, complete a ten-minute minimum at your ${a.bestTime} study time. Track starts across seven days, not just perfect days.`,
+          doubts: `Choose one question in ${a.exam === "Other" ? "your subject" : a.exam}, attempt it for ten minutes, and record the exact step you cannot justify.`,
+          tests: `After your next practice set, classify errors as concept, calculation, or timing. Choose one category for the next session.`,
+        } as const)[a.challenge],
+      },
+      {
+        title: ({
+          JEE: "Practise mixed PCM under exam conditions",
+          NEET: "Combine NCERT recall with timed MCQs",
+          Other: "Prioritise one high-value syllabus gap",
+        } as const)[a.exam],
+        detail: `${({
+          JEE: "Mix Physics, Chemistry and Maths questions and write down why each wrong option or step failed.",
+          NEET: "Recall Biology facts without notes, then use timed MCQs to check accuracy and recurring gaps.",
+          Other: "Choose a topic that is both important and uncertain, attempt exam-style questions, and update your confidence after checking.",
+        } as const)[a.exam]} ${({
+          phone: "Keep your phone out of the room during the set.",
+          people: "Choose a time and place where interruptions are less likely.",
+          overthinking: "Set a review limit and write one correction instead of replaying every mistake.",
+          fatigue: "Take the set when reasonably rested rather than using exhausted hours.",
+        } as const)[a.distraction]}`,
+      },
+      {
+        title: "Run a personal 7-day check",
+        detail: `For seven days, track one ${a.challenge === "revision" ? "closed-book recall result" : a.challenge === "consistency" ? "successful study start" : a.challenge === "doubts" ? "doubt resolved or precisely stated" : "error corrected"} during your ${a.bestTime} window. Since you report ${a.studyHours === "lt3" ? "under 3" : a.studyHours === "3to6" ? "3–6" : a.studyHours === "6to9" ? "6–9" : "9+"} study hours and ${a.focus} focus, keep the tracking lightweight. Use ${({
+          family: "supportive encouragement",
+          dream: "your longer-term goal",
+          curiosity: "a question you genuinely want to answer",
+          proving: "practice progress rather than perfection",
+        } as const)[a.motivation]} as your reminder to return to the plan.`,
       },
     ],
   };
