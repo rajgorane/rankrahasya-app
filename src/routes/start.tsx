@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { CalendarDays, Loader2 } from "lucide-react";
 import { Disclaimer, Page, seo } from "@/components/site";
 import { answersSchema, PRICE_LABEL, type Answers } from "@/lib/report";
 import { createReportOrder, getPaymentMode, verifyReportPayment } from "@/lib/orders.functions";
@@ -54,6 +54,7 @@ function Start() {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<{ kind: "error" | "info"; text: string } | null>(null);
   const pending = useRef<{ token: string; orderId: string; keyId: string; amount: number } | null>(null);
+  const dobRef = useRef<HTMLInputElement>(null);
 
   const set = (k: keyof Answers, v: unknown) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -124,8 +125,13 @@ function Start() {
   const isComplete = answersSchema.safeParse(form).success;
   const err = (k: string) => errors[k] && <p className="mt-1 text-sm text-destructive">{errors[k]}</p>;
   const today = new Date();
-  const todayDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-  const minBirthDate = `${today.getFullYear() - 16}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const dateAtAge = (years: number) => {
+    const date = new Date(today);
+    date.setFullYear(date.getFullYear() - years);
+    return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+  };
+  const minBirthDate = dateAtAge(70);
+  const maxBirthDate = dateAtAge(16);
   const inputCls = "mt-2 w-full rounded-xl border border-input bg-muted px-4 py-3 text-foreground outline-none focus:border-gold";
 
   return (
@@ -150,8 +156,20 @@ function Start() {
         </div>
         <div id="f-birthDate">
           <label className="text-sm font-medium" htmlFor="dob">Birth date</label>
-          <input id="dob" type="date" className={inputCls} min="1900-01-01" max={minBirthDate} value={(form.birthDate as string) ?? ""} onChange={(e) => set("birthDate", e.target.value)} />
-          <p className="mt-1 text-xs text-muted-foreground">Used only for your sun-season theme. We don't need birth time or place.</p>
+          <div className="mt-2 flex items-stretch gap-2">
+            <input ref={dobRef} id="dob" type="date" required min={minBirthDate} max={maxBirthDate}
+              aria-invalid={!!errors.birthDate}
+              className="min-w-0 flex-1 rounded-xl border border-input bg-muted px-4 py-3 text-foreground outline-none focus:border-gold"
+              value={(form.birthDate as string) ?? ""} onChange={(e) => set("birthDate", e.target.value)} />
+            <button type="button" onClick={() => {
+              const picker = dobRef.current as (HTMLInputElement & { showPicker?: () => void }) | null;
+              if (picker?.showPicker) picker.showPicker();
+              else dobRef.current?.focus();
+            }} className="flex shrink-0 items-center gap-2 rounded-xl border border-border px-3 text-sm font-medium text-foreground hover:border-gold" aria-label="Open birth date calendar">
+              <CalendarDays className="h-4 w-4 text-gold" /><span className="hidden sm:inline">Choose date</span>
+            </button>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">Allowed age: 16–70 years. Select a valid date using the calendar. Birth time and place are not needed.</p>
           {err("birthDate")}
         </div>
         {QUESTIONS.map((q) => (
