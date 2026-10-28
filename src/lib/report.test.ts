@@ -32,6 +32,8 @@ describe("generateReport personalisation", () => {
     }));
 
     expect(first.discoveryProfile?.title).not.toBe(second.discoveryProfile?.title);
+    expect(first.discoveryProfile?.tags).toHaveLength(3);
+    expect(second.discoveryProfile?.tags).toHaveLength(3);
     expect(first.discoveryProfile?.tagline).not.toBe(second.discoveryProfile?.tagline);
     expect(first.discoveryProfile?.insight).not.toEqual(second.discoveryProfile?.insight);
     expect(first.personalPlan).not.toEqual(second.personalPlan);
@@ -46,8 +48,8 @@ describe("generateReport personalisation", () => {
 
     for (const challenge of challenges) {
       for (const distraction of distractions) {
-        // These settings avoid the special-case insights so this exercises the
-        // general insight builder across every challenge/distraction pairing.
+        // Keep other answers fixed so this checks variation across every
+        // challenge/distraction pairing, including any dedicated insight rules.
         const report = generateReport(answers({
           studyHours: "3to6",
           bestTime: "evening",
