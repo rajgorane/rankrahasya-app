@@ -27,10 +27,7 @@ function Index() {
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Link to="/start" className="w-full rounded-full bg-gold-gradient px-8 py-4 text-lg font-semibold text-primary-foreground shadow-glow sm:w-auto">
-              Explore my study pattern
-            </Link>
-            <Link to="/sample-report" className="w-full rounded-full border border-border px-8 py-4 text-foreground hover:border-gold sm:w-auto">
-              See a sample
+              Build my personal report · ₹10
             </Link>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">No login · No phone number · About 2 minutes</p>
@@ -39,6 +36,39 @@ function Index() {
 
       <section className="mx-auto max-w-5xl px-5">
         <Disclaimer />
+      </section>
+
+      <section className="mx-auto mt-12 max-w-3xl px-5">
+        <div className="rounded-3xl border border-gold/30 bg-card p-5 sm:p-8">
+          <p className="text-center text-xs uppercase tracking-[0.25em] text-gold">A glimpse of your report</p>
+          <h2 className="mt-3 text-center text-2xl font-semibold sm:text-3xl">Not just a horoscope. A study plan built from your answers.</h2>
+          <div className="mt-6 rounded-2xl border border-border bg-background p-5 sm:p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-gold">Example insight · fictional student</p>
+            <p className="mt-2 text-lg font-medium">“You report long study days, but your focus can scatter.”</p>
+            <p className="mt-2 text-muted-foreground">Your report connects answers like study hours, focus, distractions and your biggest challenge to practical actions you can try.</p>
+            <div className="relative mt-5 overflow-hidden rounded-xl">
+              <div aria-hidden="true" className="pointer-events-none select-none space-y-3 blur-[3px]">
+                <div className="rounded-xl border border-border p-4">
+                  <p className="font-semibold">Your answer combination</p>
+                  <p className="mt-2 text-sm text-muted-foreground">A tailored observation connecting your routine, focus and biggest obstacle.</p>
+                </div>
+                <div className="rounded-xl border border-border p-4">
+                  <p className="font-semibold">Your personal game plan</p>
+                  <p className="mt-2 text-sm text-muted-foreground">A practical routine built around your strongest time of day and the friction you selected.</p>
+                </div>
+                <div className="rounded-xl border border-border p-4">
+                  <p className="font-semibold">Three next steps</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Actions tailored to your exam goal and your stated challenge.</p>
+                </div>
+              </div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/65 p-4 text-center backdrop-blur-[1px]">
+                <p className="font-semibold">Your full report is personal to your answers</p>
+                <p className="mt-1 text-sm text-muted-foreground">Answer a few questions to build yours.</p>
+                <Link to="/start" className="mt-4 rounded-full bg-gold-gradient px-6 py-3 font-semibold text-primary-foreground">Create my report · ₹10</Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="mx-auto mt-16 max-w-5xl px-5">
