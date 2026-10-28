@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Page, seo } from "@/components/site";
 
 export const Route = createFileRoute("/contact")({
-  head: () => seo("Contact — RankRahasya", "Contact RankRahasya about refunds, payment issues or report questions."),
+  head: () => seo("Contact — RankRahasya", "Contact the RankRahasya team."),
   component: Contact,
 });
 
@@ -12,11 +12,10 @@ function Contact() {
   const [submissionState, setSubmissionState] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [formMessage, setFormMessage] = useState("");
   return (
-    <Page title="Contact us" kicker="Refunds, issues or questions">
+    <Page title="Contact us" kicker="We’re here to help">
       <div className="rounded-2xl border border-border bg-card p-6">
         <p className="mb-6 text-sm text-muted-foreground">
-          Use this form for refund requests, payment or report problems, or any other question. Include the details needed
-          to investigate your request; we aim to reply within 2 working days.
+          Send us a message and we’ll get back to you within 3 working days.
         </p>
         <form action="https://formspree.io/f/mnppvavw" method="POST" className="space-y-5"
           onSubmit={async (event) => {
@@ -48,7 +47,7 @@ function Contact() {
               });
               if (!response.ok) throw new Error("Form submission failed");
               setSubmissionState("success");
-              setFormMessage("Your message has been submitted successfully. We’ll aim to respond within 2 working days.");
+              setFormMessage("Thanks for contacting us. We’ll get back to you within 3 working days.");
               form.reset();
               setRequestType("");
             } catch {
@@ -62,19 +61,19 @@ function Contact() {
               {submissionState === "sending" ? "Sending your message…" : formMessage}
             </div>
           )}
-          <p className="text-xs text-muted-foreground">Choose a topic below and we’ll ask only for the details relevant to it. For refunds, provide a UPI ID and at least one contact method. Never share your UPI PIN or OTP.</p>
+          <p className="text-xs text-muted-foreground">Please provide an email address or contact number so we can reply.</p>
           <div>
             <label htmlFor="contact-name" className="mb-2 block text-sm font-medium">Your name</label>
             <input id="contact-name" name="name" type="text" autoComplete="name" required maxLength={100}
               className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="Enter your name" />
           </div>
           <div>
-            <label htmlFor="contact-email" className="mb-2 block text-sm font-medium">Email address <span className="font-normal text-muted-foreground">(provide email or contact number)</span></label>
+            <label htmlFor="contact-email" className="mb-2 block text-sm font-medium">Email address</label>
             <input id="contact-email" name="email" type="email" autoComplete="email" maxLength={254}
               className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="you@example.com" />
           </div>
           <div>
-            <label htmlFor="contact-phone" className="mb-2 block text-sm font-medium">Contact number <span className="font-normal text-muted-foreground">(provide email or contact number)</span></label>
+            <label htmlFor="contact-phone" className="mb-2 block text-sm font-medium">Contact number</label>
             <input id="contact-phone" name="contact_number" type="tel" autoComplete="tel" maxLength={25}
               className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="Your phone number" />
           </div>
@@ -108,16 +107,16 @@ function Contact() {
             </div>
           )}
           <div>
-            <label htmlFor="contact-details" className="mb-2 block text-sm font-medium">Tell us what happened</label>
+            <label htmlFor="contact-details" className="mb-2 block text-sm font-medium">Message</label>
             <textarea id="contact-details" name="message" required minLength={10} maxLength={5000} rows={6}
               className="w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-foreground"
-              placeholder="For refunds: explain why you are requesting one. For a payment/report issue: describe the problem and when it happened. For other questions: include the details we need to help." />
+              placeholder="How can we help?" />
           </div>
           <button type="submit" disabled={submissionState === "sending"} className="w-full rounded-full bg-gold-gradient px-5 py-3 font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60">
             {submissionState === "sending" ? "Sending…" : submissionState === "success" ? "Send another message" : "Send support request"}
           </button>
         </form>
-        <p className="mt-5 text-xs text-muted-foreground">Please send only information relevant to your request. If you are feeling overwhelmed by exam stress, talk to someone you trust or call the Tele-MANAS helpline at 14416.</p>
+        
       </div>
     </Page>
   );
