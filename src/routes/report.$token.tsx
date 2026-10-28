@@ -118,7 +118,7 @@ function ReportPage() {
               try {
                 await registerChallengeInterest({ data: { token, email: challengeEmail.trim(), consent: true } });
                 setChallengeState("success");
-                setChallengeMessage("You’re on the interest list. We’ll use this email to share challenge launch updates.");
+                setChallengeMessage("Your interest has been saved. This email may be used for challenge launch updates.");
                 setChallengeEmail("");
               } catch {
                 setChallengeState("error");
