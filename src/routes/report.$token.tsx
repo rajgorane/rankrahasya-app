@@ -73,21 +73,6 @@ function ReportPage() {
           <span className="text-muted-foreground">No payment was taken for this report.</span>
         </div>
       )}
-      <div className="mb-5 rounded-2xl border border-border bg-card p-4 print:hidden">
-        <h2 className="text-xl font-semibold">Keep your report</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Save a PDF for offline access, or copy your private link to return later.</p>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <button type="button" onClick={() => window.print()} className="flex items-center justify-center gap-2 rounded-full bg-gold-gradient px-4 py-3 font-semibold text-primary-foreground">
-            <Download className="h-4 w-4" /> Save report as PDF
-          </button>
-          <button type="button" onClick={copyPrivateLink} className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 font-medium text-foreground hover:border-gold">
-            {linkCopied ? <Check className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />}
-            {linkCopied ? "Private link copied" : "Copy private report link"}
-          </button>
-        </div>
-        {copyError && <p role="status" className="mt-3 text-sm text-destructive">Could not copy automatically. Use your browser's address bar to copy this private link.</p>}
-        <p className="mt-3 text-xs text-muted-foreground">The PDF option opens your device's print dialog. Choose “Save as PDF” if available. Keep the private link and PDF somewhere secure.</p>
-      </div>
       <a className="mb-6 flex w-full items-center justify-center gap-2 rounded-full border border-[#25D366]/50 px-5 py-3 font-medium text-foreground hover:bg-[#25D366]/10 print:hidden" href={"https://wa.me/?text=" + encodeURIComponent("I tried RankRahasya’s personal study-pattern reflection. Curious what yours might say? Check it out: https://rankrahasya-next.vercel.app")} target="_blank" rel="noreferrer"><MessageCircle className="h-5 w-5 text-[#25D366]" />Share RankRahasya on WhatsApp</a>
       <div id="printable-report"><ReportView report={data.report} /></div>
       {data.mode === "live" && data.status === "paid" && (
@@ -148,6 +133,21 @@ function ReportPage() {
           {challengeState === "success" && <p role="status" aria-live="polite" className="mt-5 rounded-xl border border-green-600/30 bg-green-600/10 p-4 text-sm">{challengeMessage}</p>}
         </section>
       )}
+      <div className="mt-8 rounded-2xl border border-border bg-card p-4 print:hidden">
+        <h2 className="text-xl font-semibold">Keep your report</h2>
+        <p className="mt-1 text-sm text-muted-foreground">Save a PDF for offline access, or copy your private link to return later.</p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <button type="button" onClick={() => window.print()} className="flex items-center justify-center gap-2 rounded-full bg-gold-gradient px-4 py-3 font-semibold text-primary-foreground">
+            <Download className="h-4 w-4" /> Save report as PDF
+          </button>
+          <button type="button" onClick={copyPrivateLink} className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 font-medium text-foreground hover:border-gold">
+            {linkCopied ? <Check className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />}
+            {linkCopied ? "Private link copied" : "Copy private report link"}
+          </button>
+        </div>
+        {copyError && <p role="status" className="mt-3 text-sm text-destructive">Could not copy automatically. Use your browser's address bar to copy this private link.</p>}
+        <p className="mt-3 text-xs text-muted-foreground">The PDF option opens your device's print dialog. Choose “Save as PDF” if available. Keep the private link and PDF somewhere secure.</p>
+      </div>
     </Page>
   );
 }
