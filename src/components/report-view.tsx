@@ -25,6 +25,36 @@ export function ReportView({ report }: { report: Report }) {
           Based on your birth date only. This is not a Vedic or natal chart — no planetary placements were calculated.
         </p>
       </div>
+      {report.discoveryProfile && (
+        <section className="overflow-hidden rounded-2xl border border-gold/40 bg-card shadow-glow print:break-inside-avoid" aria-labelledby="discovery-title">
+          <div className="starfield bg-[#10162B] p-6 text-center text-white sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">Your RankRahasya profile</p>
+            <h2 id="discovery-title" className="mt-3 text-3xl font-semibold sm:text-4xl">{report.discoveryProfile.title}</h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-200">{report.discoveryProfile.tagline}</p>
+            <p className="mt-3 text-xs text-slate-400">A reflection based on your answers—not a fixed personality label.</p>
+          </div>
+          <div className="space-y-5 p-5 sm:p-7">
+            <div className="grid gap-3 sm:grid-cols-3">
+              {report.discoveryProfile.tags.map((tag) => (
+                <div key={tag.label} className="rounded-xl border border-border bg-muted/50 p-4">
+                  <p className="font-semibold text-foreground">{tag.label}</p>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{tag.detail}</p>
+                </div>
+              ))}
+            </div>
+            <div className="rounded-xl border border-gold/30 p-5">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gold">Your unexpected angle</p>
+              <h3 className="mt-2 text-xl font-semibold">{report.discoveryProfile.insight.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">{report.discoveryProfile.insight.observation}</p>
+              <p className="mt-3 text-sm leading-6"><span className="font-semibold text-foreground">Another possibility: </span><span className="text-muted-foreground">{report.discoveryProfile.insight.alternative}</span></p>
+              <div className="mt-4 rounded-lg bg-muted p-4">
+                <p className="font-semibold text-foreground">Test it in real life</p>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">{report.discoveryProfile.insight.experiment}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
       <Section n="I · astrology-inspired" title="Self-reflection">
         {report.selfReflection.map((p, i) => <p key={i}>{p}</p>)}
       </Section>
