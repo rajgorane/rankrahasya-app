@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { Page, seo } from "@/components/site";
 
 export const Route = createFileRoute("/contact")({
@@ -7,6 +8,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Contact() {
+  const [requestType, setRequestType] = useState("");
   return (
     <Page title="Contact us" kicker="Refunds, issues or questions">
       <div className="rounded-2xl border border-border bg-card p-6">
@@ -36,7 +38,7 @@ function Contact() {
             }
           }}>
           <input type="hidden" name="_subject" value="RankRahasya support request" />
-          <p className="text-xs text-muted-foreground">For refund requests, please provide a UPI ID for the refund and at least one way for us to contact you. Do not share your UPI PIN or OTP.</p>
+          <p className="text-xs text-muted-foreground">Choose a topic below and we’ll ask only for the details relevant to it. For refunds, provide a UPI ID and at least one contact method. Never share your UPI PIN or OTP.</p>
           <div>
             <label htmlFor="contact-name" className="mb-2 block text-sm font-medium">Your name</label>
             <input id="contact-name" name="name" type="text" autoComplete="name" required maxLength={100}
@@ -54,7 +56,7 @@ function Contact() {
           </div>
           <div>
             <label htmlFor="contact-type" className="mb-2 block text-sm font-medium">What do you need help with?</label>
-            <select id="contact-type" name="request_type" required defaultValue=""
+            <select id="contact-type" name="request_type" required value={requestType} onChange={(event) => setRequestType(event.target.value)}
               className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground">
               <option value="" disabled>Select a topic</option>
               <option value="Refund request">Refund request</option>
@@ -65,18 +67,22 @@ function Contact() {
               <option value="Other">Other</option>
             </select>
           </div>
-          <div>
-            <label htmlFor="contact-upi" className="mb-2 block text-sm font-medium">UPI ID <span className="font-normal text-muted-foreground">(required for refund requests)</span></label>
-            <input id="contact-upi" name="refund_upi_id" type="text" maxLength={100}
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="name@bank" />
-            <p className="mt-2 text-xs text-muted-foreground">Only enter this if requesting a refund. Never provide your UPI PIN, OTP, or banking password.</p>
-          </div>
-          <div>
-            <label htmlFor="contact-payment" className="mb-2 block text-sm font-medium">Razorpay payment ID or order ID <span className="font-normal text-muted-foreground">(if relevant)</span></label>
-            <input id="contact-payment" name="payment_or_order_id" type="text" maxLength={120}
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="Found on your payment receipt or SMS" />
-            <p className="mt-2 text-xs text-muted-foreground">For refund or payment requests, include the payment ID if available. Never enter card details, OTPs, passwords or your UPI PIN.</p>
-          </div>
+          {requestType === "Refund request" && (
+            <div>
+              <label htmlFor="contact-upi" className="mb-2 block text-sm font-medium">UPI ID <span className="text-muted-foreground">(required for refunds)</span></label>
+              <input id="contact-upi" name="refund_upi_id" type="text" required maxLength={100}
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="name@bank" />
+              <p className="mt-2 text-xs text-muted-foreground">Never provide your UPI PIN, OTP, or banking password.</p>
+            </div>
+          )}
+          {["Refund request", "Payment issue", "Report issue"].includes(requestType) && (
+            <div>
+              <label htmlFor="contact-payment" className="mb-2 block text-sm font-medium">Razorpay payment ID or order ID <span className="font-normal text-muted-foreground">(if available)</span></label>
+              <input id="contact-payment" name="payment_or_order_id" type="text" maxLength={120}
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="Found on your payment receipt or SMS" />
+              <p className="mt-2 text-xs text-muted-foreground">Never enter card details, OTPs, passwords or your UPI PIN.</p>
+            </div>
+          )}
           <div>
             <label htmlFor="contact-details" className="mb-2 block text-sm font-medium">Tell us what happened</label>
             <textarea id="contact-details" name="message" required minLength={10} maxLength={5000} rows={6}
