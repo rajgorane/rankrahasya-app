@@ -22,9 +22,11 @@ export const answersSchema = z.object({
         d.getUTCMonth() === month! - 1 &&
         d.getUTCDate() === day;
       const today = new Date();
-      const cutoff = new Date(Date.UTC(today.getUTCFullYear() - 16, today.getUTCMonth(), today.getUTCDate()));
-      return isRealDate && d.getTime() <= cutoff.getTime();
-    }, "You must be at least 16 years old"),
+      const minAllowed = new Date(Date.UTC(today.getUTCFullYear() - 70, today.getUTCMonth(), today.getUTCDate()));
+      const maxAllowed = new Date(Date.UTC(today.getUTCFullYear() - 16, today.getUTCMonth(), today.getUTCDate()));
+      const iso = (date: Date) => date.toISOString().slice(0, 10);
+      return isRealDate && v >= iso(minAllowed) && v <= iso(maxAllowed);
+    }, "You must be between 16 and 70 years old"),
   exam: z.enum(["JEE", "NEET", "Other"]),
   studyHours: z.enum(["lt3", "3to6", "6to9", "9plus"]),
   bestTime: z.enum(["morning", "afternoon", "evening", "night"]),
