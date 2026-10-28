@@ -42,7 +42,24 @@ export function ReportView({ report }: { report: Report }) {
           ))}
         </ul>
       </Section>
-      <Section n="IV" title="3 practical next steps">
+      <Section n="IV · your answer combination" title="What stands out for you">
+        <ul className="space-y-3">
+          {report.personalSnapshot.map((s, i) => (
+            <li key={i} className="flex gap-3"><span className="text-gold">✦</span><span>{s}</span></li>
+          ))}
+        </ul>
+      </Section>
+      <Section n="V · tailored to your routine" title="Your personal game plan">
+        <ol className="space-y-4">
+          {report.personalPlan.map((s, i) => (
+            <li key={i} className="flex gap-4">
+              <span className="font-serif text-3xl leading-none text-gold">{i + 1}</span>
+              <div><p className="font-semibold text-foreground">{s.title}</p><p className="mt-1">{s.detail}</p></div>
+            </li>
+          ))}
+        </ol>
+      </Section>
+      <Section n="VI" title="3 practical next steps">
         <ol className="space-y-4">
           {report.nextSteps.map((s, i) => (
             <li key={i} className="flex gap-4">
