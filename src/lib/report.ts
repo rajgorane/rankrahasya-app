@@ -376,7 +376,7 @@ function buildDiscoveryProfile(a: Answers): NonNullable<Report["discoveryProfile
   // while changing the student's responses changes the resulting profile.
   return {
     title: `${signaturePair[a.motivation][a.challenge]} · ${identity[0]}`,
-    tagline: `${identity[1]} You report ${({ lt3: "under 3", "3to6": "3–6", "6to9": "6–9", "9plus": "9+" } as const)[a.studyHours]} focused study hours, feel sharpest in the ${a.bestTime}, and are preparing for ${a.exam === "Other" ? "your chosen exam" : a.exam}. Your main challenge is ${({ revision: "revision", consistency: "consistency", doubts: "clearing doubts", tests: "mock tests" } as const)[a.challenge]}, and you say ${({ phone: "your phone", people: "your surroundings", overthinking: "overthinking", fatigue: "fatigue" } as const)[a.distraction]} most often gets in the way. Treat this as a starting hypothesis to test, not a fixed label.`
+    tagline: `${identity[1]} You report ${({ lt3: "under 3", "3to6": "3–6", "6to9": "6–9", "9plus": "9+" } as const)[a.studyHours]} focused study hours, feel sharpest in the ${a.bestTime}, and are preparing for ${a.exam === "Other" ? "your chosen exam" : a.exam}. Your main challenge is ${({ revision: "revision", consistency: "consistency", doubts: "clearing doubts", tests: "mock tests" } as const)[a.challenge]}, and you say ${({ phone: "your phone", people: "your surroundings", overthinking: "overthinking", fatigue: "fatigue" } as const)[a.distraction]} most often gets in the way. Treat this as a starting hypothesis to test, not a fixed label.`,
     tags,
     insight,
   };
