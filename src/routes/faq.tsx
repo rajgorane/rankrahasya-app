@@ -12,7 +12,7 @@ const QA = [
   ["Is astrology scientifically proven?", "No. We present the astrological part only as a reflective lens for fun and self-discovery. The study observations come from your own questionnaire answers."],
   ["Do you make a Vedic or birth chart?", "Not in this version. We use only your birth date to find your sun-season theme. We don't calculate planets, houses or placements, so we don't need your birth time or place."],
   ["What data do you collect?", "A first name or nickname, birth date, exam goal and your study answers. No email, phone or login. Payment details are handled by Razorpay, not us."],
-  ["How do I get my report again?", "After payment you land on a private link. Bookmark or save it — anyone with the link can view the report, so don't share it publicly."],
+  ["How do I get my report again?", "Bookmark or save your private report link after payment. If you lose it, use Contact and select Report issue; include your Razorpay payment/order ID and either your email or phone number so support can help locate your purchase. Keep the link private."],
   ["What if my payment fails or I cancel?", "No report is generated and no money is taken by us. If money was debited but the report doesn't appear, contact us with your payment ID."],
   ["Is it really ₹10?", "Yes — one report, ₹10, one-time. No subscription."],
 ] as const;
