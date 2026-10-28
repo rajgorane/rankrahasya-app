@@ -147,6 +147,8 @@ function ReportPage() {
             </form>
           )}
           {challengeState === "success" && <p role="status" aria-live="polite" className="mt-5 rounded-xl border border-green-600/30 bg-green-600/10 p-4 text-sm">{challengeMessage}</p>}
+        </section>
+      )}
 
     </Page>
   );
