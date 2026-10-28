@@ -56,7 +56,7 @@ export function SiteHeader() {
             </Link>
           ))}
           <Link to="/start" onClick={() => setOpen(false)} className="mt-2 rounded-full bg-gold-gradient py-3 text-center font-semibold text-primary-foreground">
-            Get my ₹10 report
+            Get my report
           </Link>
         </nav>
       )}
