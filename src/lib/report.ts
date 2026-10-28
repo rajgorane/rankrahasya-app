@@ -47,6 +47,13 @@ export type Report = {
   personalSnapshot: string[];
   personalPlan: { title: string; detail: string }[];
   nextSteps: { title: string; detail: string }[];
+  /** Optional for compatibility with reports created before this feature. */
+  discoveryProfile?: {
+    title: string;
+    tagline: string;
+    tags: { label: string; detail: string }[];
+    insight: { title: string; observation: string; alternative: string; experiment: string };
+  };
 };
 
 const SIGNS: { sign: string; element: string; keyword: string; from: [number, number] }[] = [
@@ -229,6 +236,108 @@ function buildPersonalPlan(a: Answers): { title: string; detail: string }[] {
   ];
 }
 
+/**
+ * Builds a concise, evidence-linked profile from combinations of the student's own answers.
+ * These are reflective hypotheses, not validated psychological assessments.
+ */
+function buildDiscoveryProfile(a: Answers): NonNullable<Report["discoveryProfile"]> {
+  const identity = {
+    phone: {
+      scattered: ["The Focus-Block Architect", "You are working with two friction points: attention that wanders and a phone close at hand."],
+      variable: ["The Attention Tuner", "Your focus varies, and your phone may be one condition worth testing rather than blaming yourself."],
+      steady: ["The Protected-Focus Planner", "You report steady focus; protecting it from phone interruptions may help preserve your strongest sessions."],
+    },
+    people: {
+      scattered: ["The Quiet-Space Seeker", "Your answers point to both environmental interruptions and focus that can drift."],
+      variable: ["The Environment Designer", "Your focus varies, and your surroundings may be one part of the pattern to investigate."],
+      steady: ["The Boundary Keeper", "You report steady focus, so a predictable study space may help you protect that advantage."],
+    },
+    overthinking: {
+      scattered: ["The Thought-to-Action Builder", "You report scattered focus and overthinking; a small written next step may help turn thought into action."],
+      variable: ["The Mental-Clarity Seeker", "Your focus varies, and you identify overthinking as a distraction worth experimenting with."],
+      steady: ["The Deliberate Problem-Solver", "You report steady focus, but overthinking can still consume time; use a clear stopping rule when stuck."],
+    },
+    fatigue: {
+      scattered: ["The Energy-Aware Learner", "You report both scattered focus and fatigue, so energy and recovery deserve attention alongside study technique."],
+      variable: ["The Rhythm Finder", "Your focus varies and fatigue is a challenge; tracking energy across the day may reveal a useful pattern."],
+      steady: ["The Sustainable Performer", "You report steady focus but also fatigue; protecting recovery may help you sustain that focus."],
+    },
+  }[a.distraction][a.focus];
+
+  const challengeTag: Record<Answers["challenge"], { label: string; detail: string }> = {
+    revision: { label: "The Recall Builder", detail: "Try closed-book recall before rereading. Track which facts you can retrieve without notes." },
+    consistency: { label: "The Restart Designer", detail: "Set a five-to-ten-minute minimum task for difficult days. Measure how often it helps you restart." },
+    doubts: { label: "The Doubt Unblocker", detail: "Write the exact step you cannot explain, attempt it briefly, then ask a focused question." },
+    tests: { label: "The Error Investigator", detail: "After a test, label errors as concept, calculation, or timing. Pick the most frequent category to work on next." },
+  };
+  const motivationTag: Record<Answers["motivation"], { label: string; detail: string }> = {
+    family: { label: "The Care-Fuelled Striver", detail: "Let support from family give direction, while setting goals that are also meaningful to you." },
+    dream: { label: "The Future-Driven Builder", detail: "Connect one daily task to your longer-term goal, then judge progress by actions you control." },
+    curiosity: { label: "The Why-Seeker", detail: "Turn curiosity into retrieval practice: explain why a method works without looking at the solution." },
+    proving: { label: "The Challenge Channeler", detail: "Use the urge to prove yourself to start a practice block, not to judge your worth by one result." },
+  };
+  const hoursTag: Record<Answers["studyHours"], { label: string; detail: string }> = {
+    lt3: { label: "The Small-Wins Starter", detail: "Keep a realistic baseline for seven days before increasing hours; consistency is easier to assess than one intense day." },
+    "3to6": { label: "The Quality-Hours Optimiser", detail: "Track completed questions or recall, not only time at the desk, for three sessions." },
+    "6to9": { label: "The Effort-to-Outcome Auditor", detail: "Compare your first and last study blocks to see when effort still translates into learning." },
+    "9plus": { label: "The Recovery Strategist", detail: "Check sleep and retention as well as hours; don't increase workload unless the evidence supports it." },
+  };
+
+  let insight: NonNullable<Report["discoveryProfile"]>["insight"];
+  if (a.studyHours === "9plus" && a.focus !== "steady") {
+    insight = {
+      title: "A useful tension to investigate: effort versus usable focus",
+      observation: "You report long study days, but your focus is not consistently steady. That does not mean your effort is wasted; it suggests the quality and timing of blocks may deserve as much attention as their length.",
+      alternative: "The variation could also come from difficult topics, sleep, health, or interruptions—not simply from how you study.",
+      experiment: "Across three sessions, record focused minutes and what you can recall or solve afterwards. Compare the results before changing your timetable.",
+    };
+  } else if (a.studyHours === "lt3" && a.focus === "steady") {
+    insight = {
+      title: "A possibility: your bottleneck may be time, not focus",
+      observation: "You report relatively steady focus but fewer than three study hours. If those answers reflect a typical week, extending one successful block may be a more manageable experiment than rebuilding your whole routine.",
+      alternative: "Your available time, school schedule, sleep, or responsibilities may limit study hours; those constraints matter too.",
+      experiment: "For three days, add just 15 minutes to one focused session and note whether concentration and recall remain similar.",
+    };
+  } else if (a.challenge === "tests" && a.distraction === "overthinking") {
+    insight = {
+      title: "Check whether reviewing mistakes turns into self-judgement",
+      observation: "You named tests as your hardest area and overthinking as a distraction. One possibility is that analysing a mistake sometimes takes more energy than deciding what to practise next.",
+      alternative: "The real obstacle could be a content gap or test strategy rather than overthinking.",
+      experiment: "After your next practice test, classify each error and write one corrective action. Limit the review to a planned time, then check whether the next practice improves.",
+    };
+  } else if (a.challenge === "consistency" && a.motivation === "proving") {
+    insight = {
+      title: "A possibility: high standards make restarting feel heavier",
+      observation: "You selected consistency as a challenge and proving yourself as a motivator. It may be worth checking whether a missed day feels like more than a missed day—and makes the next start harder.",
+      alternative: "Consistency can also be affected by an unrealistic timetable, tiredness, or competing responsibilities.",
+      experiment: "Choose a five-minute minimum task for one week. After a missed session, do only that minimum and note whether it helps you restart sooner.",
+    };
+  } else if (a.bestTime === "night" && a.exam !== "Other") {
+    insight = {
+      title: "Your preferred rhythm and exam conditions may differ",
+      observation: "You feel sharpest at night, while your exam practice may need to prepare you for daytime performance. This is a scheduling question to test, not a flaw in your natural rhythm.",
+      alternative: "Your night preference may reflect your current routine rather than an unchangeable body clock.",
+      experiment: "Keep sleep consistent and schedule two short daytime timed-practice sessions this week. Compare alertness and accuracy without sacrificing rest.",
+    };
+  } else {
+    insight = {
+      title: "A small pattern worth checking—not a verdict",
+      observation: `You identified ${a.challenge === "revision" ? "revision" : a.challenge === "consistency" ? "consistency" : a.challenge === "doubts" ? "clearing doubts" : "mock tests"} as your main challenge and ${a.distraction === "phone" ? "your phone" : a.distraction === "people" ? "your surroundings" : a.distraction === "overthinking" ? "overthinking" : "fatigue"} as a distraction. The combination suggests starting with a small change to your study setup may be more useful than changing everything at once.`,
+      alternative: "Your answers are a snapshot. The challenge may have other causes that this short questionnaire did not ask about.",
+      experiment: `For three sessions, apply this one change: ${a.distraction === "phone" ? "place your phone out of reach" : a.distraction === "people" ? "protect one predictable quiet study slot" : a.distraction === "overthinking" ? "write down the next concrete action before starting" : "schedule the hardest task in your sharper time window"}. Record completed work and how focused you felt.`,
+    };
+  }
+
+  const tags = [challengeTag[a.challenge], motivationTag[a.motivation], hoursTag[a.studyHours]];
+  // Keep tags meaningfully distinct; use the student's focus/distraction combination as the signature title.
+  return {
+    title: identity[0],
+    tagline: identity[1],
+    tags,
+    insight,
+  };
+}
+
 /** Deterministic, rules-based report. Same answers always produce the same report. */
 export function generateReport(a: Answers): Report {
   const theme = sunSeason(a.birthDate);
@@ -250,6 +359,7 @@ export function generateReport(a: Answers): Report {
     studyPatterns: [HOURS_TEXT[a.studyHours], TIME_TEXT[a.bestTime], FOCUS_TEXT[a.focus], DISTRACTION_TEXT[a.distraction]],
     personalSnapshot: buildPersonalSnapshot(a),
     personalPlan: buildPersonalPlan(a),
+    discoveryProfile: buildDiscoveryProfile(a),
     nextSteps: [
       STEP_BY_CHALLENGE[a.challenge],
       EXAM_STEP[a.exam],
