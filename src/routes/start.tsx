@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { CalendarDays, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Disclaimer, Page, seo } from "@/components/site";
 import { answersSchema, PRICE_LABEL, type Answers } from "@/lib/report";
 import { createReportOrder, getPaymentMode, verifyReportPayment } from "@/lib/orders.functions";
@@ -54,7 +54,6 @@ function Start() {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<{ kind: "error" | "info"; text: string } | null>(null);
   const pending = useRef<{ token: string; orderId: string; keyId: string; amount: number } | null>(null);
-  const dobRef = useRef<HTMLInputElement>(null);
 
   const set = (k: keyof Answers, v: unknown) => setForm((f) => ({ ...f, [k]: v }));
 
