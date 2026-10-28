@@ -125,3 +125,35 @@ export const getReportByToken = createServerFn({ method: "GET" })
       report: showReport ? (row.report as unknown as Report | null) : null,
     };
   });
+
+export const registerChallengeInterest = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({
+      token: z.string().regex(/^[a-f0-9]{48}$/),
+      email: z.string().trim().email().max(254),
+      consent: z.literal(true),
+    }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from("report_orders")
+      .select("id")
+      .eq("access_token", data.token)
+      .eq("mode", "live")
+      .eq("status", "paid")
+      .maybeSingle();
+
+    if (orderError || !order) {
+      throw new Error("Interest can only be registered from a paid report.");
+    }
+
+    const { error } = await supabaseAdmin
+      .from("challenge_interest")
+      .upsert(
+        { report_order_id: order.id, email: data.email, consented_at: new Date().toISOString() },
+        { onConflict: "report_order_id" },
+      );
+    if (error) throw new Error("We couldn't save your interest. Please try again.");
+    return { ok: true as const };
+  });
