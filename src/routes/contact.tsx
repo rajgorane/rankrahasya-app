@@ -22,16 +22,16 @@ function Contact() {
             const email = form.elements.namedItem("email") as HTMLInputElement;
             const phone = form.elements.namedItem("contact_number") as HTMLInputElement;
             const topic = form.elements.namedItem("request_type") as HTMLSelectElement;
-            const upi = form.elements.namedItem("refund_upi_id") as HTMLInputElement;
+            const upi = form.elements.namedItem("refund_upi_id") as HTMLInputElement | null;
             phone.setCustomValidity("");
-            upi.setCustomValidity("");
+            upi?.setCustomValidity("");
             if (!email.value.trim() && !phone.value.trim()) {
               event.preventDefault();
               phone.setCustomValidity("Enter an email address or contact number.");
               phone.reportValidity();
               return;
             }
-            if (topic.value === "Refund request" && !upi.value.trim()) {
+            if (topic.value === "Refund request" && upi && !upi.value.trim()) {
               event.preventDefault();
               upi.setCustomValidity("Enter your UPI ID so we can process a refund request.");
               upi.reportValidity();
