@@ -114,3 +114,56 @@
   & p, & li { color: var(--color-muted-foreground); line-height: 1.7; margin-bottom: 0.75rem; }
   & ul { list-style: disc; padding-left: 1.25rem; }
 }
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  body {
+    background: white !important;
+    color: #111 !important;
+    min-height: auto;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  #printable-report,
+  #printable-report * {
+    visibility: visible !important;
+  }
+
+  #printable-report {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    color: #111 !important;
+  }
+
+  #printable-report section,
+  #printable-report .bg-card {
+    background: white !important;
+    color: #111 !important;
+    border-color: #ddd !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  #printable-report h2,
+  #printable-report p,
+  #printable-report li,
+  #printable-report span {
+    color: #111 !important;
+  }
+
+  #printable-report .text-gold {
+    color: #72551b !important;
+  }
+
+  #printable-report .starfield {
+    background: white !important;
+  }
+}
