@@ -16,6 +16,7 @@ function Contact() {
         </p>
         <form action="https://formspree.io/f/mnppvavw" method="POST" className="space-y-5">
           <input type="hidden" name="_subject" value="RankRahasya support request" />
+          <p className="text-xs text-muted-foreground">For refund requests, please provide a UPI ID for the refund and at least one way for us to contact you. Do not share your UPI PIN or OTP.</p>
           <div>
             <label htmlFor="contact-name" className="mb-2 block text-sm font-medium">Your name</label>
             <input id="contact-name" name="name" type="text" autoComplete="name" required maxLength={100}
@@ -25,6 +26,11 @@ function Contact() {
             <label htmlFor="contact-email" className="mb-2 block text-sm font-medium">Email address</label>
             <input id="contact-email" name="email" type="email" autoComplete="email" required maxLength={254}
               className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="you@example.com" />
+          </div>
+          <div>
+            <label htmlFor="contact-phone" className="mb-2 block text-sm font-medium">Contact number <span className="font-normal text-muted-foreground">(optional if you provide email)</span></label>
+            <input id="contact-phone" name="contact_number" type="tel" autoComplete="tel" maxLength={25}
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="Your phone number" />
           </div>
           <div>
             <label htmlFor="contact-type" className="mb-2 block text-sm font-medium">What do you need help with?</label>
@@ -38,6 +44,12 @@ function Contact() {
               <option value="Privacy or data request">Privacy or data request</option>
               <option value="Other">Other</option>
             </select>
+          </div>
+          <div>
+            <label htmlFor="contact-upi" className="mb-2 block text-sm font-medium">UPI ID <span className="font-normal text-muted-foreground">(required for refund requests)</span></label>
+            <input id="contact-upi" name="refund_upi_id" type="text" maxLength={100}
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="name@bank" />
+            <p className="mt-2 text-xs text-muted-foreground">Only enter this if requesting a refund. Never provide your UPI PIN, OTP, or banking password.</p>
           </div>
           <div>
             <label htmlFor="contact-payment" className="mb-2 block text-sm font-medium">Razorpay payment ID or order ID <span className="font-normal text-muted-foreground">(if relevant)</span></label>
