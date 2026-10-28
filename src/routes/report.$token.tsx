@@ -4,7 +4,7 @@ import { Check, Clipboard, Download, Loader2, MessageCircle } from "lucide-react
 import { useState } from "react";
 import { Page, seo } from "@/components/site";
 import { ReportView } from "@/components/report-view";
-import { getReportByToken } from "@/lib/orders.functions";
+import { getReportByToken, registerChallengeInterest } from "@/lib/orders.functions";
 
 const reportQuery = (token: string) =>
   queryOptions({
@@ -27,6 +27,11 @@ function ReportPage() {
   const { data } = useSuspenseQuery(reportQuery(token));
   const [linkCopied, setLinkCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);
+  const [challengeOpen, setChallengeOpen] = useState(false);
+  const [challengeEmail, setChallengeEmail] = useState("");
+  const [challengeConsent, setChallengeConsent] = useState(false);
+  const [challengeState, setChallengeState] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [challengeMessage, setChallengeMessage] = useState("");
 
   async function copyPrivateLink() {
     try {
@@ -85,6 +90,64 @@ function ReportPage() {
       </div>
       <a className="mb-6 flex w-full items-center justify-center gap-2 rounded-full border border-[#25D366]/50 px-5 py-3 font-medium text-foreground hover:bg-[#25D366]/10 print:hidden" href={"https://wa.me/?text=" + encodeURIComponent("I tried RankRahasya’s personal study-pattern reflection. Curious what yours might say? Check it out: https://rankrahasya-next.vercel.app")} target="_blank" rel="noreferrer"><MessageCircle className="h-5 w-5 text-[#25D366]" />Share RankRahasya on WhatsApp</a>
       <div id="printable-report"><ReportView report={data.report} /></div>
+      {data.mode === "live" && data.status === "paid" && (
+        <section className="mt-8 rounded-2xl border border-gold/30 bg-card p-6 print:hidden" aria-labelledby="challenge-title">
+          <p className="text-xs font-semibold uppercase tracking-widest text-gold">Coming soon · Optional</p>
+          <h2 id="challenge-title" className="mt-2 text-2xl font-semibold">Accountability and Commitment Builder</h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Build a consistent study habit with seven days of small daily tasks, tests, and accountability.
+          </p>
+          <div className="mt-4 grid grid-cols-3 gap-3 text-center">
+            <div className="rounded-xl bg-muted p-3"><strong className="block text-lg">7 days</strong><span className="text-xs text-muted-foreground">Daily tasks</span></div>
+            <div className="rounded-xl bg-muted p-3"><strong className="block text-lg">₹100</strong><span className="text-xs text-muted-foreground">Proposed commitment</span></div>
+            <div className="rounded-xl bg-muted p-3"><strong className="block text-lg">₹10/day</strong><span className="text-xs text-muted-foreground">Proposed return</span></div>
+          </div>
+          <p className="mt-3 text-xs leading-5 text-muted-foreground">
+            Concept only. No payment is being collected. The proposed model returns ₹10 for each completed day, with the remaining ₹30 settled on day seven if all ₹100 is refundable. Final rules will be published before launch.
+          </p>
+          {!challengeOpen && challengeState !== "success" && (
+            <button type="button" onClick={() => setChallengeOpen(true)} className="mt-5 w-full rounded-full bg-gold-gradient px-5 py-3 font-semibold text-primary-foreground">
+              I’m interested
+            </button>
+          )}
+          {challengeOpen && challengeState !== "success" && (
+            <form className="mt-5 space-y-4" onSubmit={async (event) => {
+              event.preventDefault();
+              setChallengeState("sending");
+              setChallengeMessage("");
+              try {
+                await registerChallengeInterest({ data: { token, email: challengeEmail.trim(), consent: true } });
+                setChallengeState("success");
+                setChallengeMessage("You’re on the interest list. We’ll use this email to share challenge launch updates.");
+                setChallengeEmail("");
+              } catch {
+                setChallengeState("error");
+                setChallengeMessage("We couldn’t save your interest. Please check your email and try again.");
+              }
+            }}>
+              <div>
+                <label htmlFor="challenge-email" className="mb-2 block text-sm font-medium">Email address</label>
+                <input id="challenge-email" type="email" name="email" required maxLength={254} autoComplete="email"
+                  value={challengeEmail} onChange={(event) => setChallengeEmail(event.target.value)}
+                  placeholder="you@example.com" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" />
+              </div>
+              <label className="flex items-start gap-3 text-sm text-muted-foreground">
+                <input type="checkbox" required checked={challengeConsent} onChange={(event) => setChallengeConsent(event.target.checked)} className="mt-1 accent-[var(--color-gold)]" />
+                <span>I agree to be contacted by email about the Accountability and Commitment Builder.</span>
+              </label>
+              {challengeState === "error" && <p role="alert" className="text-sm text-destructive">{challengeMessage}</p>}
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <button type="submit" disabled={challengeState === "sending" || !challengeConsent} className="flex-1 rounded-full bg-gold-gradient px-5 py-3 font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60">
+                  {challengeState === "sending" ? "Saving…" : "Notify me at launch"}
+                </button>
+                <button type="button" onClick={() => setChallengeOpen(false)} className="rounded-full border border-border px-5 py-3 text-sm font-medium">Cancel</button>
+              </div>
+              <p className="text-xs text-muted-foreground">No payment or commitment required to register interest.</p>
+            </form>
+          )}
+          {challengeState === "success" && <p role="status" aria-live="polite" className="mt-5 rounded-xl border border-green-600/30 bg-green-600/10 p-4 text-sm">{challengeMessage}</p>}
+        </section>
+      )}
     </Page>
   );
 }
