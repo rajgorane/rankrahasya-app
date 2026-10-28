@@ -27,7 +27,7 @@ function Index() {
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Link to="/start" className="w-full rounded-full bg-gold-gradient px-8 py-4 text-lg font-semibold text-primary-foreground shadow-glow sm:w-auto">
-              Build my personal report · ₹10
+              Build my personal report
             </Link>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">No login · No phone number · About 2 minutes</p>
@@ -64,7 +64,7 @@ function Index() {
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/65 p-4 text-center backdrop-blur-[1px]">
                 <p className="font-semibold">Your full report is personal to your answers</p>
                 <p className="mt-1 text-sm text-muted-foreground">Answer a few questions to build yours.</p>
-                <Link to="/start" className="mt-4 rounded-full bg-gold-gradient px-6 py-3 font-semibold text-primary-foreground">Create my report · ₹10</Link>
+                <Link to="/start" className="mt-4 rounded-full bg-gold-gradient px-6 py-3 font-semibold text-primary-foreground">Create my report</Link>
               </div>
             </div>
           </div>
