@@ -408,10 +408,14 @@ function buildDiscoveryProfile(a: Answers): NonNullable<Report["discoveryProfile
   };
   const tags = [
     challengeTag[a.challenge],
-    motivationTag[a.motivation],
-    hoursTag[a.studyHours],
-    timeTag[a.bestTime],
-    examTag[a.exam],
+    {
+      ...timeTag[a.bestTime],
+      detail: `${timeTag[a.bestTime].detail} Your reported focus is ${({ scattered: "scattered", variable: "variable", steady: "steady" } as const)[a.focus]}, so ${({ phone: "put your phone out of reach", people: "protect this slot from interruptions", overthinking: "write the next action before starting", fatigue: "check your energy and recovery first" } as const)[a.distraction]}.`,
+    },
+    {
+      ...hoursTag[a.studyHours],
+      detail: `${hoursTag[a.studyHours].detail} ${({ family: "Let family support encourage you without turning study into guilt.", dream: "Link the session to one measurable step toward your goal.", curiosity: "Use a why-question to make the practice more engaging.", proving: "Measure progress by practice and learning, not by self-worth." } as const)[a.motivation]} For ${a.exam === "Other" ? "your exam" : a.exam}, use the relevant syllabus and question format.`,
+    },
   ];
   // Titles and tags use multiple answer dimensions; the same answer set stays stable,
   // while changing the student's responses changes the resulting profile.
