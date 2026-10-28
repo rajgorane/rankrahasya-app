@@ -328,11 +328,55 @@ function buildDiscoveryProfile(a: Answers): NonNullable<Report["discoveryProfile
     };
   }
 
-  const tags = [challengeTag[a.challenge], motivationTag[a.motivation], hoursTag[a.studyHours]];
-  // Keep tags meaningfully distinct; use the student's focus/distraction combination as the signature title.
+  const timeTag: Record<Answers["bestTime"], { label: string; detail: string }> = {
+    morning: { label: "The Morning Momentum", detail: "Use your sharper morning window for one task with a clear finish line, then check whether recall is better than later sessions." },
+    afternoon: { label: "The Afternoon Strategist", detail: "Reserve your reported high-energy window for active problem-solving and compare accuracy with another time slot." },
+    evening: { label: "The Evening Builder", detail: "Prepare the task before your evening focus window begins so you can spend that energy on practice, not deciding what to do." },
+    night: { label: "The Night-Rhythm Planner", detail: "Protect sleep while testing your night-time focus; include some daytime timed practice if your exam takes place then." },
+  };
+  const examTag: Record<Answers["exam"], { label: string; detail: string }> = {
+    JEE: { label: "The Problem-Solving Trainee", detail: "Build fluency by solving mixed Physics, Chemistry and Maths questions, then review the exact step where your reasoning broke." },
+    NEET: { label: "The Recall-and-Accuracy Builder", detail: "Combine active NCERT recall with timed MCQs and maintain a short list of facts or concepts you repeatedly miss." },
+    Other: { label: "The Syllabus Mapper", detail: "Break your syllabus into visible topics, mark confidence honestly, and choose the weakest high-priority area for the next session." },
+  };
+  const signaturePair: Record<Answers["motivation"], Record<Answers["challenge"], string>> = {
+    family: {
+      revision: "The Promise-to-Progress Keeper",
+      consistency: "The Steady Commitment Builder",
+      doubts: "The Support-Seeking Problem Solver",
+      tests: "The Responsible Test Analyst",
+    },
+    dream: {
+      revision: "The Future-Focused Reviser",
+      consistency: "The Dream-to-Routine Builder",
+      doubts: "The Curious Doubt Chaser",
+      tests: "The Goal-Driven Error Analyst",
+    },
+    curiosity: {
+      revision: "The Concept Connector",
+      consistency: "The Curiosity-to-Consistency Builder",
+      doubts: "The Question-First Explorer",
+      tests: "The Mistake-to-Discovery Learner",
+    },
+    proving: {
+      revision: "The Quiet Progress Prover",
+      consistency: "The Comeback Architect",
+      doubts: "The Determined Gap Closer",
+      tests: "The Challenge-to-Strategy Learner",
+    },
+  };
+  const tags = [
+    challengeTag[a.challenge],
+    motivationTag[a.motivation],
+    hoursTag[a.studyHours],
+    timeTag[a.bestTime],
+    examTag[a.exam],
+  ];
+  // Titles and tags use multiple answer dimensions; the same answer set stays stable,
+  // while changing the student's responses changes the resulting profile.
   return {
-    title: identity[0],
-    tagline: identity[1],
+    title: signaturePair[a.motivation][a.challenge],
+    tagline: `${identity[1]} Your reported strongest study window is ${a.bestTime}, and you are preparing for ${a.exam === "Other" ? "your chosen exam" : a.exam}.`,
     tags,
     insight,
   };
