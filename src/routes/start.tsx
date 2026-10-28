@@ -121,6 +121,7 @@ function Start() {
     }
   }
 
+  const isComplete = answersSchema.safeParse(form).success;
   const err = (k: string) => errors[k] && <p className="mt-1 text-sm text-destructive">{errors[k]}</p>;
   const today = new Date();
   const todayDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
@@ -198,7 +199,7 @@ function Start() {
 
         <button type="submit" disabled={busy || mode?.available === false} className="flex w-full items-center justify-center gap-2 rounded-full bg-gold-gradient py-4 text-lg font-semibold text-primary-foreground shadow-glow disabled:opacity-60">
           {busy && <Loader2 className="h-5 w-5 animate-spin" />}
-          {mode?.available === false ? "Unlock temporarily unavailable" : mode?.live === false ? "Unlock demo report (no payment)" : `Unlock my report — ${PRICE_LABEL}`}
+          {mode?.available === false ? "Unlock temporarily unavailable" : mode?.live === false ? "Unlock demo report (no payment)" : isComplete ? `Unlock my report — ${PRICE_LABEL}` : "Complete your answers to unlock"}
         </button>
         <Disclaimer compact />
       </form>
