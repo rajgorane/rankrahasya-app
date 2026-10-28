@@ -132,6 +132,15 @@ function Start() {
   };
   const minBirthDate = dateAtAge(70);
   const maxBirthDate = dateAtAge(16);
+  const [birthYear, setBirthYear] = useState("");
+  const [birthMonth, setBirthMonth] = useState("");
+  const [birthDay, setBirthDay] = useState("");
+  const earliestYear = Number(minBirthDate.slice(0, 4));
+  const latestYear = Number(maxBirthDate.slice(0, 4));
+  // Put the most common student birth years first, while retaining the full supported range.
+  const birthYears = Array.from({ length: latestYear - earliestYear + 1 }, (_, i) => latestYear - i);
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const daysInMonth = birthYear && birthMonth ? new Date(Number(birthYear), Number(birthMonth), 0).getDate() : 31;
   const inputCls = "mt-2 w-full rounded-xl border border-input bg-muted px-4 py-3 text-foreground outline-none focus:border-gold";
 
   return (
@@ -155,21 +164,41 @@ function Start() {
           {err("name")}
         </div>
         <div id="f-birthDate">
-          <label className="text-sm font-medium" htmlFor="dob">Birth date</label>
-          <div className="mt-2 flex items-stretch gap-2">
-            <input ref={dobRef} id="dob" type="date" required min={minBirthDate} max={maxBirthDate}
-              aria-invalid={!!errors.birthDate}
-              className="min-w-0 flex-1 rounded-xl border border-input bg-muted px-4 py-3 text-foreground outline-none focus:border-gold"
-              value={(form.birthDate as string) ?? ""} onChange={(e) => set("birthDate", e.target.value)} />
-            <button type="button" onClick={() => {
-              const picker = dobRef.current as (HTMLInputElement & { showPicker?: () => void }) | null;
-              if (picker?.showPicker) picker.showPicker();
-              else dobRef.current?.focus();
-            }} className="flex shrink-0 items-center gap-2 rounded-xl border border-border px-3 text-sm font-medium text-foreground hover:border-gold" aria-label="Open birth date calendar">
-              <CalendarDays className="h-4 w-4 text-gold" /><span className="hidden sm:inline">Choose date</span>
-            </button>
+          <label className="text-sm font-medium" htmlFor="birth-year">Birth date</label>
+          <div className="grid grid-cols-3 gap-2">
+            <select id="birth-year" aria-label="Birth year" aria-invalid={!!errors.birthDate} className={inputCls} value={birthYear}
+              onChange={(e) => {
+                const year = e.target.value;
+                setBirthYear(year);
+                const day = birthDay ? Math.min(Number(birthDay), year && birthMonth ? new Date(Number(year), Number(birthMonth), 0).getDate() : 31) : 0;
+                setBirthDay(day ? String(day) : "");
+                set("birthDate", year && birthMonth && day ? `${year}-${birthMonth.padStart(2, "0")}-${String(day).padStart(2, "0")}` : "");
+              }}>
+              <option value="">Year</option>
+              {birthYears.map((year) => <option key={year} value={String(year)}>{year}</option>)}
+            </select>
+            <select aria-label="Birth month" className={inputCls} value={birthMonth}
+              onChange={(e) => {
+                const month = e.target.value;
+                setBirthMonth(month);
+                const day = birthDay ? Math.min(Number(birthDay), birthYear && month ? new Date(Number(birthYear), Number(month), 0).getDate() : 31) : 0;
+                setBirthDay(day ? String(day) : "");
+                set("birthDate", birthYear && month && day ? `${birthYear}-${month.padStart(2, "0")}-${String(day).padStart(2, "0")}` : "");
+              }}>
+              <option value="">Month</option>
+              {monthNames.map((month, i) => <option key={month} value={String(i + 1)}>{month}</option>)}
+            </select>
+            <select aria-label="Birth day" className={inputCls} value={birthDay}
+              onChange={(e) => {
+                const day = e.target.value;
+                setBirthDay(day);
+                set("birthDate", birthYear && birthMonth && day ? `${birthYear}-${birthMonth.padStart(2, "0")}-${day.padStart(2, "0")}` : "");
+              }}>
+              <option value="">Day</option>
+              {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => <option key={day} value={String(day)}>{day}</option>)}
+            </select>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">Allowed age: 16–70 years. Select a valid date using the calendar. Birth time and place are not needed.</p>
+          <p className="mt-2 text-xs text-muted-foreground">Choose year, month and day. Birth time and place are not needed.</p>
           {err("birthDate")}
         </div>
         {QUESTIONS.map((q) => (
