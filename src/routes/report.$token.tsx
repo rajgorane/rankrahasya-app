@@ -93,7 +93,7 @@ function ReportPage() {
       {data.mode === "live" && data.status === "paid" && (
         <section className="mt-8 rounded-2xl border border-gold/30 bg-card p-6 print:hidden" aria-labelledby="challenge-title">
           <p className="text-xs font-semibold uppercase tracking-widest text-gold">Coming soon · Optional</p>
-          <h2 id="challenge-title" className="mt-2 text-2xl font-semibold">Accountability and Commitment Builder</h2>
+          <h2 id="challenge-title" className="mt-2 text-2xl font-semibold">The 7-Day Comeback</h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
             Build a consistent study habit with seven days of small daily tasks, tests, and accountability.
           </p>
@@ -133,7 +133,7 @@ function ReportPage() {
               </div>
               <label className="flex items-start gap-3 text-sm text-muted-foreground">
                 <input type="checkbox" required checked={challengeConsent} onChange={(event) => setChallengeConsent(event.target.checked)} className="mt-1 accent-[var(--color-gold)]" />
-                <span>I agree to be contacted by email about the Accountability and Commitment Builder.</span>
+                <span>I agree to be contacted by email about the The 7-Day Comeback.</span>
               </label>
               {challengeState === "error" && <p role="alert" className="text-sm text-destructive">{challengeMessage}</p>}
               <div className="flex flex-col gap-3 sm:flex-row">
