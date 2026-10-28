@@ -320,11 +320,52 @@ function buildDiscoveryProfile(a: Answers): NonNullable<Report["discoveryProfile
       experiment: "Keep sleep consistent and schedule two short daytime timed-practice sessions this week. Compare alertness and accuracy without sacrificing rest.",
     };
   } else {
+    const challengeName = {
+      revision: "revision and recall",
+      consistency: "getting started consistently",
+      doubts: "resolving difficult questions",
+      tests: "learning from mock tests",
+    }[a.challenge];
+    const distractionName = {
+      phone: "phone access",
+      people: "interruptions from people or surroundings",
+      overthinking: "thoughts that keep looping",
+      fatigue: "low energy",
+    }[a.distraction];
+    const motivationFrame = {
+      family: "Because supporting people matters to you, make the next step a promise to your process—not a judgement of your worth.",
+      dream: "Because you are working towards a future goal, connect the next task to progress you can actually measure today.",
+      curiosity: "Because curiosity drives you, turn the obstacle into a question you can investigate rather than a label about yourself.",
+      proving: "Because proving yourself matters to you, use the challenge as a cue to practise—not as evidence you must be perfect.",
+    }[a.motivation];
+    const focusFrame = {
+      scattered: "Since you report scattered focus, make the experiment short and remove one source of friction before you begin.",
+      variable: "Since your focus varies, compare more than one session before deciding what the pattern means.",
+      steady: "Since you report steady focus, keep the structure that works and test whether a small adjustment improves the result.",
+    }[a.focus];
+    const effortFrame = {
+      lt3: "With under three focused hours reported, test a small repeatable block rather than a bigger timetable.",
+      "3to6": "With 3–6 focused hours reported, look for a better return from an existing block before adding more time.",
+      "6to9": "With 6–9 focused hours reported, compare the quality of your earlier and later work instead of assuming every hour helps equally.",
+      "9plus": "With 9+ focused hours reported, check retention and recovery before considering any increase in workload.",
+    }[a.studyHours];
+    const challengeQuestion = {
+      revision: "Can you retrieve the idea without notes, rather than only recognising it while rereading?",
+      consistency: "What is the smallest useful action you can still complete on a difficult day?",
+      doubts: "Can you name the exact step where your reasoning stops, instead of marking the whole topic as unclear?",
+      tests: "Which error category repeats most often: concept, calculation, or time management?",
+    }[a.challenge];
+    const experimentAction = {
+      revision: "close your notes and write what you remember before checking gaps",
+      consistency: "start with a ten-minute minimum task and record whether you continue",
+      doubts: "write the exact stuck step, attempt it, then ask one focused question",
+      tests: "classify each error and choose one correction for the next practice set",
+    }[a.challenge];
     insight = {
-      title: "A small pattern worth checking—not a verdict",
-      observation: `You identified ${a.challenge === "revision" ? "revision" : a.challenge === "consistency" ? "consistency" : a.challenge === "doubts" ? "clearing doubts" : "mock tests"} as your main challenge and ${a.distraction === "phone" ? "your phone" : a.distraction === "people" ? "your surroundings" : a.distraction === "overthinking" ? "overthinking" : "fatigue"} as a distraction. The combination suggests starting with a small change to your study setup may be more useful than changing everything at once.`,
-      alternative: "Your answers are a snapshot. The challenge may have other causes that this short questionnaire did not ask about.",
-      experiment: `For three sessions, apply this one change: ${a.distraction === "phone" ? "place your phone out of reach" : a.distraction === "people" ? "protect one predictable quiet study slot" : a.distraction === "overthinking" ? "write down the next concrete action before starting" : "schedule the hardest task in your sharper time window"}. Record completed work and how focused you felt.`,
+      title: `Test the link between ${challengeName} and ${distractionName}`,
+      observation: `You named ${challengeName} as your main challenge and ${distractionName} as a distraction. ${focusFrame} The useful question is: ${challengeQuestion}`,
+      alternative: `${motivationFrame} This is only a hypothesis from your answers; topic difficulty, sleep, schedule and support can also affect the pattern.`,
+      experiment: `For three sessions, ${experimentAction}. Keep your usual study time around the ${a.bestTime} window and record what you completed, not just how long you sat down. ${effortFrame}`,
     };
   }
 
