@@ -44,6 +44,8 @@ export type Report = {
   selfReflection: string[];
   strengths: string[];
   studyPatterns: string[];
+  personalSnapshot: string[];
+  personalPlan: { title: string; detail: string }[];
   nextSteps: { title: string; detail: string }[];
 };
 
@@ -154,6 +156,79 @@ const EXAM_STEP: Record<Answers["exam"], { title: string; detail: string }> = {
   },
 };
 
+function buildPersonalSnapshot(a: Answers): string[] {
+  const effortFocus =
+    a.studyHours === "9plus" && a.focus === "scattered"
+      ? "You report long study days but scattered focus. Your best experiment is not to add more hours: protect two distraction-free blocks and measure completed questions instead."
+      : a.studyHours === "lt3" && a.focus === "steady"
+        ? "You report steady focus but fewer than three focused hours. That suggests your first experiment could be to extend one existing focused block by 15 minutes, rather than redesigning your whole day."
+        : a.studyHours === "6to9" && a.focus === "variable"
+          ? "You report substantial study time with focus that varies. Compare your best and worst sessions for sleep, task difficulty and phone access before changing your total hours."
+          : a.studyHours === "9plus"
+            ? "You report 9+ focused hours. Protect sleep and recovery; judge the day by learning and error correction, not by stretching the timetable further."
+            : a.studyHours === "lt3"
+              ? "You report under three focused hours. Start with a repeatable baseline you can keep for seven days before increasing the workload."
+              : a.focus === "scattered"
+                ? "You report scattered focus. Use short, single-task blocks and make the phone or your main distraction physically harder to reach."
+                : a.focus === "steady"
+                  ? "You report mostly steady focus. Use that strength for timed practice, then review mistakes while the reasoning is still fresh."
+                  : "You report focus that varies. Track the conditions around two good and two difficult sessions to identify a change you can actually control.";
+  const challengeDistraction: Record<Answers["challenge"], Record<Answers["distraction"], string>> = {
+    revision: {
+      phone: "Because revision is your main challenge and your phone is the main distraction, put the phone away and finish one closed-book recall sheet before checking messages.",
+      people: "Because revision is your main challenge and your surroundings interrupt you, choose one predictable quiet slot and finish a small recall target before moving on.",
+      overthinking: "Because revision is your main challenge and overthinking gets in the way, write down distracting thoughts, then test recall from memory before rereading notes.",
+      fatigue: "Because revision is your main challenge and tiredness gets in the way, place recall practice in your sharper time window and use shorter reviews when energy is low.",
+    },
+    consistency: {
+      phone: "For consistency, define a small minimum task before opening your phone; keep the phone out of reach until that task is done.",
+      people: "For consistency, set a fixed start time and tell people your first study block is protected; make the minimum task small enough to finish on a difficult day.",
+      overthinking: "For consistency, write the next physical action on paper before you begin. Your goal is to start the first 10 minutes, not solve the whole day in your head.",
+      fatigue: "For consistency, set a realistic minimum for low-energy days and protect sleep rather than relying on a late-night catch-up session.",
+    },
+    doubts: {
+      phone: "For clearing doubts, keep a doubt list on paper and attempt each item before using your phone to search for a solution.",
+      people: "For clearing doubts, collect questions during study and book a predictable slot with a teacher or peer instead of waiting for interruptions to resolve them.",
+      overthinking: "For clearing doubts, write what you know, identify the exact missing step, and ask one precise question rather than repeatedly circling the whole problem.",
+      fatigue: "For clearing doubts, mark difficult questions and return to them in your sharper time window; do not confuse tiredness with not understanding.",
+    },
+    tests: {
+      phone: "For mock-test improvement, keep the phone away during the test and its review; classify each error before looking at solutions.",
+      people: "For mock-test improvement, protect the test and review window from interruptions so you can identify whether errors came from concepts, calculation or timing.",
+      overthinking: "For mock-test improvement, label each error by cause and choose one correction. Avoid turning one poor question into a judgement about your ability.",
+      fatigue: "For mock-test improvement, take the test when reasonably rested and review errors in a separate focused block rather than forcing a long review while exhausted.",
+    },
+  };
+  return [effortFocus, challengeDistraction[a.challenge][a.distraction]];
+}
+
+function buildPersonalPlan(a: Answers): { title: string; detail: string }[] {
+  const hours = {
+    lt3: "Start with one 25-minute focused block, a 5-minute break, then a second block if energy allows. Build consistency before adding volume.",
+    "3to6": "Use two or three focused blocks with a clear output for each; protect the final 10 minutes for recall or error review.",
+    "6to9": "Prioritise the two highest-value blocks first. Use later time for revision and corrections rather than adding low-quality hours.",
+    "9plus": "Set a firm stopping time and schedule breaks. Keep the most demanding work in your sharpest window; more hours are not automatically better.",
+  }[a.studyHours];
+  const timing = {
+    morning: "Put your hardest task in the first strong morning window, before messages or routine admin.",
+    afternoon: "Reserve your best afternoon window for problem-solving; use the earlier part of the day for setup or lighter review.",
+    evening: "Place your hardest work in the evening window you identified, and decide in advance what must be completed before it begins.",
+    night: "Use your night-time focus for a planned task, but keep sleep consistent and practise some timed work during the exam's likely daytime hours.",
+  }[a.bestTime];
+  const distraction = {
+    phone: "Leave your phone outside arm's reach and decide when you will check it after the block ends.",
+    people: "Choose a repeatable location and signal the start and end of your protected study block to people around you.",
+    overthinking: "Before starting, write the one task you will finish and park unrelated worries on a page to revisit later.",
+    fatigue: "Check sleep, hydration and breaks first; if tiredness persists, reduce the block size rather than forcing extra hours.",
+  }[a.distraction];
+  const challenge = STEP_BY_CHALLENGE[a.challenge];
+  return [
+    { title: `Your ${a.bestTime} anchor`, detail: `${timing} ${hours}` },
+    { title: "Reduce your biggest friction", detail: distraction },
+    { title: `One priority for ${a.exam === "Other" ? "your exam" : a.exam}`, detail: challenge.detail },
+  ];
+}
+
 /** Deterministic, rules-based report. Same answers always produce the same report. */
 export function generateReport(a: Answers): Report {
   const theme = sunSeason(a.birthDate);
@@ -173,6 +248,8 @@ export function generateReport(a: Answers): Report {
       `The ${theme.element.toLowerCase()} theme of “${theme.keyword}” — if it resonates — can be a reminder of a quality you already want to grow.`,
     ],
     studyPatterns: [HOURS_TEXT[a.studyHours], TIME_TEXT[a.bestTime], FOCUS_TEXT[a.focus], DISTRACTION_TEXT[a.distraction]],
+    personalSnapshot: buildPersonalSnapshot(a),
+    personalPlan: buildPersonalPlan(a),
     nextSteps: [
       STEP_BY_CHALLENGE[a.challenge],
       EXAM_STEP[a.exam],
