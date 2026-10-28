@@ -41,6 +41,43 @@ describe("generateReport personalisation", () => {
     expect(first.studyPatterns).not.toEqual(second.studyPatterns);
   });
 
+  it("uses every profile input to change the generated report", () => {
+    const baseline = answers({
+      name: "Aarav",
+      birthDate: "2008-08-30",
+      exam: "JEE",
+      studyHours: "3to6",
+      bestTime: "morning",
+      focus: "variable",
+      distraction: "phone",
+      motivation: "dream",
+      challenge: "revision",
+    });
+    const variants: Partial<Answers>[] = [
+      { name: "Mira" },
+      { birthDate: "2008-02-25" },
+      { exam: "NEET" },
+      { studyHours: "9plus" },
+      { bestTime: "night" },
+      { focus: "steady" },
+      { distraction: "fatigue" },
+      { motivation: "curiosity" },
+      { challenge: "tests" },
+    ];
+
+    for (const change of variants) {
+      expect(generateReport(answers(change))).not.toEqual(generateReport(baseline));
+    }
+  });
+
+  it("changes the practical plan for each study challenge", () => {
+    const challenges = ["revision", "consistency", "doubts", "tests"] as const;
+    const plans = challenges.map((challenge) =>
+      generateReport(answers({ challenge })).personalPlan
+    );
+    expect(new Set(plans.map((plan) => JSON.stringify(plan))).size).toBe(challenges.length);
+  });
+
   it("creates distinct generic insight titles for all challenge/distraction pairs", () => {
     const titles = new Set<string>();
     const challenges = ["revision", "consistency", "doubts", "tests"] as const;
