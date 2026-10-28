@@ -17,7 +17,7 @@ function Refund() {
         </ul>
         <p>Email support@rankrahasya.in with your Razorpay payment ID within 7 days. Approved refunds go back to the original payment method, usually within 5–7 working days.</p>
         <h2>Not refundable</h2>
-        <p>Once a report has been delivered, it is a digital product and is generally not refundable because you disagree with its content — please read the sample report before buying.</p>
+        <p>Once a report has been delivered, it is a digital product and is generally not refundable because you disagree with its content — please review the blurred report preview on the home page before buying.</p>
         <h2>Failed or cancelled payments</h2>
         <p>If a payment fails, any amount debited by your bank is normally reversed automatically by Razorpay/your bank.</p>
       </div>
