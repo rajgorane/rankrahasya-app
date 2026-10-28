@@ -14,7 +14,27 @@ function Contact() {
           Use this form for refund requests, payment or report problems, or any other question. Include the details needed
           to investigate your request; we aim to reply within 2 working days.
         </p>
-        <form action="https://formspree.io/f/mnppvavw" method="POST" className="space-y-5">
+        <form action="https://formspree.io/f/mnppvavw" method="POST" className="space-y-5"
+          onSubmit={(event) => {
+            const form = event.currentTarget;
+            const email = form.elements.namedItem("email") as HTMLInputElement;
+            const phone = form.elements.namedItem("contact_number") as HTMLInputElement;
+            const topic = form.elements.namedItem("request_type") as HTMLSelectElement;
+            const upi = form.elements.namedItem("refund_upi_id") as HTMLInputElement;
+            phone.setCustomValidity("");
+            upi.setCustomValidity("");
+            if (!email.value.trim() && !phone.value.trim()) {
+              event.preventDefault();
+              phone.setCustomValidity("Enter an email address or contact number.");
+              phone.reportValidity();
+              return;
+            }
+            if (topic.value === "Refund request" && !upi.value.trim()) {
+              event.preventDefault();
+              upi.setCustomValidity("Enter your UPI ID so we can process a refund request.");
+              upi.reportValidity();
+            }
+          }}>
           <input type="hidden" name="_subject" value="RankRahasya support request" />
           <p className="text-xs text-muted-foreground">For refund requests, please provide a UPI ID for the refund and at least one way for us to contact you. Do not share your UPI PIN or OTP.</p>
           <div>
@@ -23,12 +43,12 @@ function Contact() {
               className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="Enter your name" />
           </div>
           <div>
-            <label htmlFor="contact-email" className="mb-2 block text-sm font-medium">Email address</label>
-            <input id="contact-email" name="email" type="email" autoComplete="email" required maxLength={254}
+            <label htmlFor="contact-email" className="mb-2 block text-sm font-medium">Email address <span className="font-normal text-muted-foreground">(provide email or contact number)</span></label>
+            <input id="contact-email" name="email" type="email" autoComplete="email" maxLength={254}
               className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="you@example.com" />
           </div>
           <div>
-            <label htmlFor="contact-phone" className="mb-2 block text-sm font-medium">Contact number <span className="font-normal text-muted-foreground">(optional if you provide email)</span></label>
+            <label htmlFor="contact-phone" className="mb-2 block text-sm font-medium">Contact number <span className="font-normal text-muted-foreground">(provide email or contact number)</span></label>
             <input id="contact-phone" name="contact_number" type="tel" autoComplete="tel" maxLength={25}
               className="w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground" placeholder="Your phone number" />
           </div>
